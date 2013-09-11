@@ -12,6 +12,8 @@ private:
   bool _ticked = false;
 
 public:
+  //using Policy::Policy;
+
   void Tick()
   {
     if( !_ticked )
@@ -30,6 +32,12 @@ public:
   void SetInput( const T& value )
   {
     std::get< input >( Policy::input_ ) = value;
+  }
+
+  template< int input >
+  auto GetInput() -> decltype( std::get< input >( Policy::input_ ) )
+  {
+    return std::get< input >( Policy::input_ );
   }
 
   template< int output >

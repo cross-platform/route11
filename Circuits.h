@@ -5,7 +5,6 @@
 
 #include "Components.h"
 #include "Route11.h"
-#include "C:\Projects\DSP\DSPatch\include\DSPatch.h"
 
 //-----------------------------------------------------------------------------
 
@@ -41,38 +40,6 @@ public:
     outGen2,
     outInv1,
     outInv2
-  };
-};
-
-template <unsigned short N> struct Box {};
-
-template< typename CT >
-class R11DspComponent : public DspComponent
-{
-private:
-  CT _component;
-
-  template< int index >
-  void _FillInputs( DspSignalBus& inputs, Box<index> x = Box<index>() )
-  {
-    _FillInputs< index - 1 >( inputs );
-  }
-
-  void _FillInputs( DspSignalBus& inputs, Box<0> x = Box<0>() )
-  {
-    //index != 0 ? _FillInputs< index - 1 >( inputs ) : int i = 0;
-  }
-
-public:
-  R11DspComponent()
-  {
-    AddInput_();
-    AddOutput_();
-  }
-
-  void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override
-  {
-    _FillInputs< CT::inputCount >( inputs );
   };
 };
 

@@ -42,6 +42,12 @@ public:
     _component.template SetInput< input >( value );
   }
 
+  template< int input >
+  auto GetInput() -> decltype( _component.template GetInput< input >() )
+  {
+    return _component.template GetInput< input >();
+  }
+
   template< int output >
   auto GetOutput() -> decltype( _component.template GetOutput< output >() )
   {

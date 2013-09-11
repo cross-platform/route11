@@ -88,6 +88,12 @@ public:
     std::get< _ToComp< input >() >( _components ).template SetInput< _ToIndex< input >() >( value );
   }
 
+  template< int input >
+  auto GetInput() -> decltype( std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >() )
+  {
+    return std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >();
+  }
+
   template< int output >
   auto GetOutput() -> decltype( std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >() )
   {
