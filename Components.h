@@ -5,7 +5,7 @@
 
 class BoolGenerator
 {
-public:
+protected:
   ~BoolGenerator() = default;
 
   void Process()
@@ -22,7 +22,7 @@ public:
 
 class BoolInverter
 {
-public:
+protected:
   ~BoolInverter() = default;
 
   void Process()
@@ -38,7 +38,7 @@ public:
 
 class BoolPrinter
 {
-public:
+protected:
   ~BoolPrinter() = default;
 
   void Process()

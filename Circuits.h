@@ -6,6 +6,10 @@
 #include "Components.h"
 #include "Route11.h"
 
+using Route11::R11Component;
+using Route11::R11ComponentLoop;
+using Route11::R11ComponentPair;
+
 //-----------------------------------------------------------------------------
 
 class _BoolsPrinter

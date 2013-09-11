@@ -6,7 +6,6 @@
 #include "R11Component.h"
 #include "R11ComponentLoop.h"
 #include "R11ComponentPair.h"
-#include "R11DspComponent.h"
 
 //-----------------------------------------------------------------------------
 

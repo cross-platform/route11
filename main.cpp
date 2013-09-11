@@ -22,7 +22,7 @@ int main()
 {
   BoolsPrinter x;
 
-  R11DspComponent< BoolsPrinter > y;
+  //R11DspComponent< BoolsPrinter > y;
 
   x.Tick();
   x.Reset();

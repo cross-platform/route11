@@ -3,6 +3,8 @@
 
 //-----------------------------------------------------------------------------
 
+namespace Route11
+{
 template< unsigned int C1inputCount, unsigned int C1outputCount, typename C1T,
           unsigned int C2inputCount, unsigned int C2outputCount, typename C2T,
           unsigned int C1fromOutput = 0, unsigned int... C2toInput >
@@ -16,12 +18,12 @@ class R11ComponentPair
 
   //-----------------------------------------------------------------------------
 
-public:
+private:
   std::pair< C1T, C2T > _components;
 
   //-----------------------------------------------------------------------------
 
-public:
+private:
   template< int input >
   static constexpr int _ToComp()
   {
@@ -106,6 +108,7 @@ public:
   static const unsigned int inputCount = C1inputCount + C2inputCount;
   static const unsigned int outputCount = C1outputCount + C2outputCount;
 };
+}
 
 //-----------------------------------------------------------------------------
 

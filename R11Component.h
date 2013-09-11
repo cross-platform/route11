@@ -3,16 +3,18 @@
 
 //-----------------------------------------------------------------------------
 
+namespace Route11
+{
 template< typename Policy >
 class R11Component : public Policy
 {
-  //static_assert( !std::is_destructible< Policy >::value, "Component policy should not be destructible" );
+  static_assert( !std::is_destructible< Policy >::value, "Component policy should not be destructible" );
 
 private:
   bool _ticked = false;
 
 public:
-  //using Policy::Policy;
+  using Policy::Policy;
 
   void Tick()
   {
@@ -49,6 +51,7 @@ public:
   static const unsigned int inputCount = std::tuple_size< decltype( R11Component::input_ ) >::value;
   static const unsigned int outputCount = std::tuple_size< decltype( R11Component::output_ ) >::value;
 };
+}
 
 //-----------------------------------------------------------------------------
 
