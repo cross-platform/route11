@@ -26,10 +26,7 @@ using Route11::R11DspComponent;
 int main()
 {
   BoolsPrinter x;
-
   R11DspComponent< BoolsPrinter > y;
-
-  y.Tick();
 
   x.Tick();
   x.Reset();
@@ -38,6 +35,11 @@ int main()
 
   std::cout << x.GetOutput< BoolsPrinter::outGen2 >() << '\n';
 
+  getchar();
+  y.StartAutoTick();
+  getchar();
+
+  DSPatch::Finalize();
   return 0;
 }
 
