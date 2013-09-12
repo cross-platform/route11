@@ -17,7 +17,7 @@ HEADERS += \
 
 INCLUDEPATH += "/home/marcus/Projects/DSPatch/include"
 
-debug:LIBS += -L/home/marcus/Projects/personal/build-DSPatch-Desktop_clang-Debug -lDSPatch
-release:LIBS += -L/home/marcus/Projects/personal/build-DSPatch-Desktop_clang-Release -lDSPatch
+debug:LIBS += -L/home/marcus/Projects/personal/DSPatch/build-DSPatch-Desktop_clang-Debug -lDSPatch
+release:LIBS += -L/home/marcus/Projects/personal/DSPatch/build-DSPatch-Desktop_clang-Release -lDSPatch
 
 LIBS += -lpthread
