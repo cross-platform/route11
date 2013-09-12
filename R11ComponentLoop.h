@@ -5,6 +5,7 @@
 
 namespace Route11
 {
+
 template< typename CT, int fromOutput, int... toInput >
 class R11ComponentLoop
 {
@@ -59,6 +60,7 @@ public:
   static const unsigned int inputCount = CT::inputCount;
   static const unsigned int outputCount = CT::outputCount;
 };
+
 }
 
 //-----------------------------------------------------------------------------

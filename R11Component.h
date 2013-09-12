@@ -5,6 +5,7 @@
 
 namespace Route11
 {
+
 template< typename Policy >
 class R11Component : public Policy
 {
@@ -51,6 +52,7 @@ public:
   static const unsigned int inputCount = std::tuple_size< decltype( R11Component::input_ ) >::value;
   static const unsigned int outputCount = std::tuple_size< decltype( R11Component::output_ ) >::value;
 };
+
 }
 
 //-----------------------------------------------------------------------------

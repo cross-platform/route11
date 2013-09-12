@@ -15,5 +15,9 @@ HEADERS += \
     R11DspComponent.h \
     Route11.h
 
-Release:LIBS += "C:/Projects/Qt Projects/DSPatch/release/libDSPatch.a"
-Debug:LIBS += "C:/Projects/Qt Projects/DSPatch/debug/libDSPatch.a"
+INCLUDEPATH += "/home/marcus/Projects/DSPatch/include"
+
+debug:LIBS += -L/home/marcus/Projects/personal/build-DSPatch-Desktop_clang-Debug -lDSPatch
+release:LIBS += -L/home/marcus/Projects/personal/build-DSPatch-Desktop_clang-Release -lDSPatch
+
+LIBS += -lpthread

@@ -4,12 +4,13 @@
 //-----------------------------------------------------------------------------
 
 #include <functional>
-#include "C:\Projects\DSP\DSPatch\include\DSPatch.h"
+#include "DSPatch.h"
 
 //-----------------------------------------------------------------------------
 
 namespace Route11
 {
+
 template< typename CT >
 class R11DspComponent final : public DspComponent
 {
@@ -75,6 +76,7 @@ public:
     _outputsLooper.FillOutputs( _component, outputs );
   };
 };
+
 }
 
 //-----------------------------------------------------------------------------
