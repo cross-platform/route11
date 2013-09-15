@@ -14,7 +14,8 @@ HEADERS += \
     R11ComponentPair.h \
     R11DspComponent.h \
     Route11.h \
-    R11ComponentBase.h
+    R11ComponentBase.h \
+    R11ComponentThread.h
 
 INCLUDEPATH += "/home/marcus/Projects/DSPatch/include"
 

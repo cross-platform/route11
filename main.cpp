@@ -46,8 +46,6 @@ int main()
   x.Tick();
   x.Tick();
 
-  std::cout << x.GetOutput< BoolsPrinter::outGen2 >() << '\n';
-
   getchar();
   y.StartAutoTick();
   getchar();

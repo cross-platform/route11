@@ -74,13 +74,33 @@ private:
   //-----------------------------------------------------------------------------
 
 public:
+  void SetThreadCount( char threadCount )
+  {
+    threads_.clear();
+
+    for( char i = 0; i < threadCount; i++ )
+    {
+      threads_.push_back( R11ComponentThread( std::bind( &R11ComponentPair::Tick, this, i ) ) );
+    }
+
+    threadCount_ = threadCount;
+    currentThread_ = threadCount - 1;
+  }
+
   void Tick( char threadNo = -1 )
   {
-    _components.first.Tick( threadNo );
+    if( threadNo == -1 && threadCount_ > 0 )
+    {
+      ThreadTick();
+    }
+    else
+    {
+      _components.first.Tick( threadNo );
 
-    _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
+      _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
 
-    _components.second.Tick( threadNo );
+      _components.second.Tick( threadNo );
+    }
   }
 
   template< int input, typename T >

@@ -5,6 +5,8 @@
 
 #include "R11ComponentBase.h"
 
+#include <thread>
+
 //-----------------------------------------------------------------------------
 
 namespace Route11
@@ -38,6 +40,12 @@ private:
 public:
   void Tick( char threadNo = -1 )
   {
+    if( threadNo == -1 && threadCount_ > 0 )
+    {
+      std::thread t1( [](){} );
+      t1.join();
+    }
+
     _component.Tick( threadNo );
 
     _TransferSignals< fromOutput, toInput... >( threadNo );

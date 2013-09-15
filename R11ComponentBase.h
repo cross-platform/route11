@@ -4,6 +4,9 @@
 //-----------------------------------------------------------------------------
 
 #include <vector>
+#include <thread>
+
+#include "R11ComponentThread.h"
 
 //-----------------------------------------------------------------------------
 
@@ -12,20 +15,19 @@ namespace Route11
 
 class R11ComponentBase
 {
-private:
-  std::vector< int > _threads;
-  char _threadCount = 0;
-  char _currentThread = -1;
-
 protected:
   R11ComponentBase() = default;
   ~R11ComponentBase() = default;
 
+  std::vector< R11ComponentThread > threads_;
+  char threadCount_ = 0;
+  char currentThread_ = -1;
+
 public:
-  void SetThreadCount( char threadCount )
+  void ThreadTick()
   {
-    _threads.resize( threadCount );
-    _threadCount = threadCount;
+    threads_[currentThread_].Tick();
+    ++currentThread_ %= threadCount_;
   }
 };
 
