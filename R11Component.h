@@ -19,16 +19,7 @@ public:
 
   void Tick( char threadNo = -1 )
   {
-    if( !_ticked )
-    {
-      _ticked = true;
-      Policy::Process();
-    }
-  }
-
-  void Reset( char threadNo = -1 )
-  {
-    _ticked = false;
+    Policy::Process();
   }
 
   template< int input, typename T >

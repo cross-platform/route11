@@ -28,10 +28,23 @@ int main()
   BoolsPrinter x;
   R11DspComponent< BoolsPrinter > y;
 
-  x.Tick( 0 );
-  x.Reset( 0 );
+  x.SetThreadCount( 2 );
+  y.SetThreadCount( 2 );
+
   x.Tick();
-  x.Reset();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
+  x.Tick();
 
   std::cout << x.GetOutput< BoolsPrinter::outGen2 >() << '\n';
 

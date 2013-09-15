@@ -65,10 +65,13 @@ public:
     _outputsLooper.AddIos( [ this ]() { AddOutput_(); } );
   }
 
+  void SetThreadCount( char threadCount )
+  {
+    _component.SetThreadCount( threadCount );
+  }
+
   void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override
   {
-    _component.Reset();
-
     _inputsLooper.FillInputs( _component, inputs );
 
     _component.Tick();

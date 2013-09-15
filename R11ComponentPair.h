@@ -3,6 +3,10 @@
 
 //-----------------------------------------------------------------------------
 
+#include "R11ComponentBase.h"
+
+//-----------------------------------------------------------------------------
+
 namespace Route11
 {
 
@@ -10,7 +14,7 @@ template< unsigned int C1inputCount, unsigned int C1outputCount, typename C1T,
           unsigned int C2inputCount, unsigned int C2outputCount, typename C2T,
           unsigned int C1fromOutput = 0, unsigned int... C2toInput >
 
-class R11ComponentPair
+class R11ComponentPair : public R11ComponentBase
 {
   static_assert( C1inputCount <= C1T::inputCount, "Input count provided for C1 is larger than available inputs" );
   static_assert( C1outputCount <= C1T::outputCount, "Output count provided for C1 is larger than available outputs" );
@@ -77,12 +81,6 @@ public:
     _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
 
     _components.second.Tick( threadNo );
-  }
-
-  void Reset( char threadNo = -1 )
-  {
-    _components.first.Reset( threadNo );
-    _components.second.Reset( threadNo );
   }
 
   template< int input, typename T >

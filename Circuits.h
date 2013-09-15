@@ -15,14 +15,29 @@ using Route11::R11ComponentPair;
 class _BoolsPrinter
 {
 private:
-  using BoolInverterPair = R11ComponentPair< 1, 1, R11Component< BoolInverter >, 1, 1, R11Component< BoolInverter > >;
+  using BoolInverterPair = R11ComponentPair<
+  1, 1, R11Component< BoolInverter >,
+  1, 1, R11Component< BoolInverter > >;
 
-  using BoolInvertedGen = R11ComponentPair< 0, 2, R11Component< BoolGenerator >, 2, 2, BoolInverterPair, 0, 0, 1, 1 >;
+  using BoolInverterLoop = R11ComponentLoop<
+  2, 2, BoolInverterPair,
+  1, 1 >;
 
-  using BoolPrinterPair = R11ComponentPair< 1, 0, R11Component< BoolPrinter >, 1, 0, R11Component< BoolPrinter > >;
+  using BoolInvertedGen = R11ComponentPair<
+  0, 2, R11Component< BoolGenerator >,
+  2, 2, BoolInverterLoop,
+  1, 0 >;
+
+  using BoolPrinterPair = R11ComponentPair<
+  1, 0, R11Component< BoolPrinter >,
+  1, 0, R11Component< BoolPrinter > >;
 
 public:
-  using T = R11ComponentPair< 2, 4, BoolInvertedGen, 2, 0, BoolPrinterPair, 2, 0, 3, 1 >;
+  using T = R11ComponentPair<
+  2, 4, BoolInvertedGen,
+  2, 0, BoolPrinterPair,
+  2, 0,
+  3, 1 >;
 };
 
 //-----------------------------------------------------------------------------

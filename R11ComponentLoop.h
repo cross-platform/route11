@@ -3,12 +3,21 @@
 
 //-----------------------------------------------------------------------------
 
+#include "R11ComponentBase.h"
+
+//-----------------------------------------------------------------------------
+
 namespace Route11
 {
 
-template< typename CT, int fromOutput, int... toInput >
-class R11ComponentLoop
+template< unsigned int CinputCount, unsigned int CoutputCount, typename CT,
+          unsigned int fromOutput, unsigned int... toInput >
+
+class R11ComponentLoop : public R11ComponentBase
 {
+  static_assert( CinputCount <= CT::inputCount, "Input count provided is larger than available inputs" );
+  static_assert( CoutputCount <= CT::outputCount, "Output count provided is larger than available outputs" );
+
 private:
   CT _component;
 
@@ -34,11 +43,6 @@ public:
     _TransferSignals< fromOutput, toInput... >( threadNo );
   }
 
-  void Reset( char threadNo = -1 )
-  {
-    _component.Reset( threadNo );
-  }
-
   template< int input, typename T >
   void SetInput( const T& value, char threadNo = -1 )
   {
@@ -57,8 +61,8 @@ public:
     return _component.template GetOutput< output >( threadNo );
   }
 
-  static const unsigned int inputCount = CT::inputCount;
-  static const unsigned int outputCount = CT::outputCount;
+  static const unsigned int inputCount = CinputCount;
+  static const unsigned int outputCount = CoutputCount;
 };
 
 }
