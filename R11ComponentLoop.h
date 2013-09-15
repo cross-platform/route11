@@ -23,6 +23,11 @@ class R11ComponentLoop : public R11ComponentBase
 private:
   CT _component;
 
+  virtual std::function< void( char ) > GetTickMethod( char threadIndex ) final
+  {
+    return std::bind( &R11ComponentLoop::Tick, this, threadIndex );
+  }
+
 private:
   template< int output, int input, int nextOutput, int... nextInput >
   void _TransferSignals( char threadNo = -1 )
@@ -42,13 +47,14 @@ public:
   {
     if( threadNo == -1 && threadCount_ > 0 )
     {
-      std::thread t1( [](){} );
-      t1.join();
+      ThreadTick();
     }
+    else
+    {
+      _component.Tick( threadNo );
 
-    _component.Tick( threadNo );
-
-    _TransferSignals< fromOutput, toInput... >( threadNo );
+      _TransferSignals< fromOutput, toInput... >( threadNo );
+    }
   }
 
   template< int input, typename T >

@@ -8,11 +8,13 @@
 #include <condition_variable>
 
 //-----------------------------------------------------------------------------
+namespace Route11
+{
 
 class R11ComponentThread
 {
 private:
-  std::function< void( char ) > _function;
+  std::function< void( char ) > _function = nullptr;
 
   bool _stop = false;
   bool _stopped = false;
@@ -61,7 +63,7 @@ private:
 
       _resumeMutex.unlock();
 
-      if( !_stop )
+      if( !_stop && _function != nullptr )
       {
         _function( 0 );
       }
@@ -71,12 +73,12 @@ private:
   }
 
 public:
-  R11ComponentThread( std::function< void( char ) > function )
-  : _function( function ) {}
+  R11ComponentThread() = default;
+  R11ComponentThread( const R11ComponentThread& other ) {}
 
-  R11ComponentThread( const R11ComponentThread& other )
+  void Initialise( std::function< void( char ) > function )
   {
-    _function = other._function;
+    _function = function;
   }
 
   ~R11ComponentThread()
@@ -97,6 +99,8 @@ public:
     _Sync();
   }
 };
+
+}
 
 //-----------------------------------------------------------------------------
 

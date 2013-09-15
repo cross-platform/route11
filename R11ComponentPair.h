@@ -73,20 +73,12 @@ private:
 
   //-----------------------------------------------------------------------------
 
-public:
-  void SetThreadCount( char threadCount )
+  virtual std::function< void( char ) > GetTickMethod( char threadIndex ) final
   {
-    threads_.clear();
-
-    for( char i = 0; i < threadCount; i++ )
-    {
-      threads_.push_back( R11ComponentThread( std::bind( &R11ComponentPair::Tick, this, i ) ) );
-    }
-
-    threadCount_ = threadCount;
-    currentThread_ = threadCount - 1;
+    return std::bind( &R11ComponentPair::Tick, this, threadIndex );
   }
 
+public:
   void Tick( char threadNo = -1 )
   {
     if( threadNo == -1 && threadCount_ > 0 )

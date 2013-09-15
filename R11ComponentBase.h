@@ -23,7 +23,24 @@ protected:
   char threadCount_ = 0;
   char currentThread_ = -1;
 
+  virtual std::function< void( char ) > GetTickMethod( char threadIndex ) = 0;
+
 public:
+  void SetThreadCount( char threadCount )
+  {
+    threads_.resize( threadCount );
+
+    char i = 0;
+    for( auto& thread : threads_ )
+    {
+      thread.Initialise( GetTickMethod( i ) );
+      ++i;
+    }
+
+    threadCount_ = threadCount;
+    currentThread_ = threadCount - 1;
+  }
+
   void ThreadTick()
   {
     threads_[currentThread_].Tick();

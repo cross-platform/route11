@@ -12,7 +12,7 @@ namespace Route11
 {
 
 template< typename CT >
-class R11DspComponent final : public DspComponent
+class R11DspComponent : public DspComponent
 {
 private:
   CT _component;
