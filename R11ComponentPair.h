@@ -52,55 +52,55 @@ private:
   //-----------------------------------------------------------------------------
 
   template< int output, int input, int nextOutput, int... nextInput >
-  void _TransferSignals()
+  void _TransferSignals( char threadNo = -1 )
   {
-    _TransferSignals< output, input >();
-    _TransferSignals< nextOutput, nextInput... >();
+    _TransferSignals< output, input >( threadNo );
+    _TransferSignals< nextOutput, nextInput... >( threadNo );
   }
 
   template< int output, int input >
-  void _TransferSignals()
+  void _TransferSignals( char threadNo = -1 )
   {
-    _components.second.template SetInput< input >( _components.first.template GetOutput< output >() );
+    _components.second.template SetInput< input >( _components.first.template GetOutput< output >( threadNo ), threadNo );
   }
 
   template< int oddIndex >
-  void _TransferSignals() {}
+  void _TransferSignals( char threadNo = -1 ) {}
 
   //-----------------------------------------------------------------------------
 
 public:
-  void Tick()
+  void Tick( char threadNo = -1 )
   {
-    _components.first.Tick();
+    _components.first.Tick( threadNo );
 
-    _TransferSignals< C1fromOutput, C2toInput... >();
+    _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
 
-    _components.second.Tick();
+    _components.second.Tick( threadNo );
   }
 
-  void Reset()
+  void Reset( char threadNo = -1 )
   {
-    _components.first.Reset();
-    _components.second.Reset();
+    _components.first.Reset( threadNo );
+    _components.second.Reset( threadNo );
   }
 
   template< int input, typename T >
-  void SetInput( const T& value )
+  void SetInput( const T& value, char threadNo = -1 )
   {
-    std::get< _ToComp< input >() >( _components ).template SetInput< _ToIndex< input >() >( value );
+    std::get< _ToComp< input >() >( _components ).template SetInput< _ToIndex< input >() >( value, threadNo );
   }
 
   template< int input >
-  auto GetInput() -> decltype( std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >() )
+  auto GetInput( char threadNo = -1 ) -> decltype( std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >( threadNo ) )
   {
-    return std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >();
+    return std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >( threadNo );
   }
 
   template< int output >
-  auto GetOutput() -> decltype( std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >() )
+  auto GetOutput( char threadNo = -1 ) -> decltype( std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >( threadNo ) )
   {
-    return std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >();
+    return std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >( threadNo );
   }
 
   //-----------------------------------------------------------------------------

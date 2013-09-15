@@ -28,8 +28,8 @@ int main()
   BoolsPrinter x;
   R11DspComponent< BoolsPrinter > y;
 
-  x.Tick();
-  x.Reset();
+  x.Tick( 0 );
+  x.Reset( 0 );
   x.Tick();
   x.Reset();
 

@@ -17,7 +17,7 @@ private:
 public:
   using Policy::Policy;
 
-  void Tick()
+  void Tick( char threadNo = -1 )
   {
     if( !_ticked )
     {
@@ -26,25 +26,25 @@ public:
     }
   }
 
-  void Reset()
+  void Reset( char threadNo = -1 )
   {
     _ticked = false;
   }
 
   template< int input, typename T >
-  void SetInput( const T& value )
+  void SetInput( const T& value, char threadNo = -1 )
   {
     std::get< input >( Policy::input_ ) = value;
   }
 
   template< int input >
-  auto GetInput() -> decltype( std::get< input >( Policy::input_ ) )
+  auto GetInput( char threadNo = -1 ) -> decltype( std::get< input >( Policy::input_ ) )
   {
     return std::get< input >( Policy::input_ );
   }
 
   template< int output >
-  auto GetOutput() -> decltype( std::get< output >( Policy::output_ ) )
+  auto GetOutput( char threadNo = -1 ) -> decltype( std::get< output >( Policy::output_ ) )
   {
     return std::get< output >( Policy::output_ );
   }

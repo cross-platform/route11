@@ -14,47 +14,47 @@ private:
 
 private:
   template< int output, int input, int nextOutput, int... nextInput >
-  void _TransferSignals()
+  void _TransferSignals( char threadNo = -1 )
   {
-    _TransferSignals< output, input >();
-    _TransferSignals< nextOutput, nextInput... >();
+    _TransferSignals< output, input >( threadNo );
+    _TransferSignals< nextOutput, nextInput... >( threadNo );
   }
 
   template< int output, int input >
-  void _TransferSignals()
+  void _TransferSignals( char threadNo = -1 )
   {
-    _component.template SetInput< input >( _component.template GetOutput< output >() );
+    _component.template SetInput< input >( _component.template GetOutput< output >( threadNo ), threadNo );
   }
 
 public:
-  void Tick()
+  void Tick( char threadNo = -1 )
   {
-    _component.Tick();
+    _component.Tick( threadNo );
 
-    _TransferSignals< fromOutput, toInput... >();
+    _TransferSignals< fromOutput, toInput... >( threadNo );
   }
 
-  void Reset()
+  void Reset( char threadNo = -1 )
   {
-    _component.Reset();
+    _component.Reset( threadNo );
   }
 
   template< int input, typename T >
-  void SetInput( const T& value )
+  void SetInput( const T& value, char threadNo = -1 )
   {
-    _component.template SetInput< input >( value );
+    _component.template SetInput< input >( value, threadNo );
   }
 
   template< int input >
-  auto GetInput() -> decltype( _component.template GetInput< input >() )
+  auto GetInput( char threadNo = -1 ) -> decltype( _component.template GetInput< input >( threadNo ) )
   {
-    return _component.template GetInput< input >();
+    return _component.template GetInput< input >( threadNo );
   }
 
   template< int output >
-  auto GetOutput() -> decltype( _component.template GetOutput< output >() )
+  auto GetOutput( char threadNo = -1 ) -> decltype( _component.template GetOutput< output >( threadNo ) )
   {
-    return _component.template GetOutput< output >();
+    return _component.template GetOutput< output >( threadNo );
   }
 
   static const unsigned int inputCount = CT::inputCount;

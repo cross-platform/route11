@@ -74,7 +74,7 @@ public:
     _component.Tick();
 
     _outputsLooper.FillOutputs( _component, outputs );
-  };
+  }
 };
 
 }
