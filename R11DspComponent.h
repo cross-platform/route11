@@ -14,10 +14,10 @@ namespace Route11
 {
 
 template< typename CT >
-class R11DspComponent : public DspComponent
+class R11DspComponent final : public DspComponent
 {
 public:
-  R11DspComponent();
+  explicit R11DspComponent( int_fast8_t threadCount = 0 );
 
   void SetThreadCount( int_fast8_t threadCount );
 
@@ -52,10 +52,12 @@ private:
 //=============================================================================
 
 template< typename CT >
-R11DspComponent< CT >::R11DspComponent()
+R11DspComponent< CT >::R11DspComponent( int_fast8_t threadCount )
 {
   _inputsLooper.AddIos( [ this ]() { AddInput_(); } );
   _outputsLooper.AddIos( [ this ]() { AddOutput_(); } );
+
+  SetThreadCount( threadCount );
 }
 
 //=============================================================================

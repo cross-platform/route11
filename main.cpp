@@ -5,18 +5,43 @@
 
 #include <iostream>
 
-// USED 19
-// in-class initializers, override, static_assert, type traits, auto, decltype,
-// std::function, lambdas, tuples, uniform init, alias, = default / delete, constexpr,
-// variadic templates, inheriting constr, nullptr, std::threads, chrono, range-for,
+// USED 23
+// =======
+// in-class initializers
+// override
+// final
+// static_assert
+// type traits
+// auto
+// decltype
+// std::function
+// lambdas
+// tuples
+// uniform init
+// alias
+// = default / delete
+// constexpr
+// variadic templates
+// inheriting constr
+// nullptr
+// std::threads
+// chrono
+// range-for
 // integer types
+// safe pointers
+// expicit conv
 
-// NOT USED 10
-// final, delegating constr, enum classes, user-defined literals,
-// safe pointers, std::array, expicit conv, STL algorithms, nonmember begin/end
-
-// NOT GOING TO USE 4
-// raw string literals, char types, unrestricted unions, inline namespace
+// NOT USED 9
+// ===========
+// delegating constr
+// enum classes
+// user-defined literals
+// std::array
+// STL algorithms
+// raw string literals
+// char types
+// unrestricted unions
+// inline namespace
 
 //-----------------------------------------------------------------------------
 
