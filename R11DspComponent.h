@@ -54,6 +54,24 @@ private:
     void FillOutputs( CT& component, DspSignalBus& inputs ) {}
   };
 
+  class _AutoTickGuard
+  {
+  public:
+    _AutoTickGuard( DspComponent& component )
+    : _component( component )
+    {
+      _component.PauseAutoTick();
+    }
+
+    ~_AutoTickGuard()
+    {
+      _component.ResumeAutoTick();
+    }
+
+  private:
+    DspComponent& _component;
+  };
+
 private:
   _StaticLoop< 0, CT::inputCount > _inputsLooper;
   _StaticLoop< 0, CT::outputCount > _outputsLooper;
@@ -80,9 +98,8 @@ void R11DspComponent< CT >::SetThreadCount( int_fast8_t threadCount )
     return;
   }
 
-  PauseAutoTick();
+  _AutoTickGuard( *this );
   _component.SetThreadCount( threadCount );
-  ResumeAutoTick();
 }
 
 //-----------------------------------------------------------------------------
@@ -91,9 +108,8 @@ template< typename CT >
 template< uint_fast16_t input, typename T >
 void R11DspComponent< CT >::SetInput( const T& value )
 {
-  PauseAutoTick();
+  _AutoTickGuard( *this );
   _component.template SetInput< input >( value );
-  ResumeAutoTick();
 }
 
 //-----------------------------------------------------------------------------
@@ -102,11 +118,8 @@ template< typename CT >
 template< uint_fast16_t input >
 auto R11DspComponent< CT >::GetInput() -> decltype( _component.template GetInput< input >() )
 {
-  PauseAutoTick();
-  auto returnValue = _component.template GetInput< input >();
-  ResumeAutoTick();
-
-  return returnValue;
+  _AutoTickGuard( *this );
+  return _component.template GetInput< input >();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,11 +128,8 @@ template< typename CT >
 template< uint_fast16_t output >
 auto R11DspComponent< CT >::GetOutput() -> decltype( _component.template GetOutput< output >() )
 {
-  PauseAutoTick();
-  auto returnValue = _component.template GetOutput< output >();
-  PauseAutoTick();
-
-  return returnValue;
+  _AutoTickGuard( *this );
+  return _component.template GetOutput< output >();
 }
 
 //=============================================================================
