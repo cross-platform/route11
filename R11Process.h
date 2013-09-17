@@ -40,7 +40,7 @@ public:
 
 private:
   void _WaitForRelease( char bufferNo );
-  void _ReleaseThread( char bufferNo );
+  void _ReleaseBuffer( char bufferNo );
 
 private:
   bool _ticked = false;
@@ -60,6 +60,11 @@ private:
 template< typename Policy >
 void R11Process< Policy >::SetBufferCount( char bufferCount )
 {
+  if( bufferCount < 0 || bufferCount == _bufferCount )
+  {
+    return;
+  }
+
   _bufferCount = 0;
 
   _gotReleases.resize( 0 );
@@ -95,7 +100,7 @@ void R11Process< Policy >::Tick( char bufferNo )
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _outputBuffers[ bufferNo ] = Policy::output_;
-    _ReleaseThread( bufferNo );
+    _ReleaseBuffer( bufferNo );
   }
 }
 
@@ -164,7 +169,7 @@ void R11Process< Policy >::_WaitForRelease( char bufferNo )
 //=============================================================================
 
 template< typename Policy >
-void R11Process< Policy >::_ReleaseThread( char bufferNo )
+void R11Process< Policy >::_ReleaseBuffer( char bufferNo )
 {
   if( _bufferCount > 0 )
   {

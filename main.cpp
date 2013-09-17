@@ -49,6 +49,7 @@ int main()
   y.SetThreadCount( 1 );
   y.SetThreadCount( 0 );
   y.SetThreadCount( 3 );
+  circuit.SetThreadCount( 1 );
   y.SetThreadCount( 100 );
   y.SetThreadCount( 0 );
   getchar();

@@ -60,6 +60,11 @@ R11Component< PT >::~R11Component()
 template< typename PT >
 void R11Component< PT >::SetThreadCount( char threadCount )
 {
+  if( threadCount < 0 || threadCount == threadCount_ )
+  {
+    return;
+  }
+
   while( threadCount_ != 0 && currentThread_ != 0 )
   {
     _ThreadTick();

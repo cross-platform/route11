@@ -62,6 +62,11 @@ R11DspComponent< CT >::R11DspComponent()
 template< typename CT >
 void R11DspComponent< CT >::SetThreadCount( char threadCount )
 {
+  if( threadCount < 0 )
+  {
+    return;
+  }
+
   PauseAutoTick();
   _component.SetThreadCount( threadCount );
   ResumeAutoTick();
