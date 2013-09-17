@@ -90,8 +90,7 @@ public:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t input >
-  auto GetInput( int_fast8_t threadNo = -1 )
-  -> decltype( std::get< _ToComp< input >() >( _processes ).template GetInput< _ToIndex< input >() >( threadNo ) )
+  auto GetInput( int_fast8_t threadNo = -1 ) -> decltype( std::get< _ToComp< input >() >( _processes ).template GetInput< _ToIndex< input >() >( threadNo ) )
   {
     return std::get< _ToComp< input >() >( _processes ).template GetInput< _ToIndex< input >() >( threadNo );
   }
@@ -99,8 +98,7 @@ public:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t output >
-  auto GetOutput( int_fast8_t threadNo = -1 )
-  -> decltype( std::get< _FromComp< output >() >( _processes ).template GetOutput< _FromIndex< output >() >( threadNo ) )
+  auto GetOutput( int_fast8_t threadNo = -1 ) -> decltype( std::get< _FromComp< output >() >( _processes ).template GetOutput< _FromIndex< output >() >( threadNo ) )
   {
     return std::get< _FromComp< output >() >( _processes ).template GetOutput< _FromIndex< output >() >( threadNo );
   }

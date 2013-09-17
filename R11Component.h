@@ -29,13 +29,11 @@ public:
   template< uint_fast16_t input, typename T >
   void SetInput( const T& value );
 
-  template< uint_fast16_t output >
-  auto GetInput()
-  -> decltype( _process.template GetInput< output >() );
+  template< uint_fast16_t input >
+  auto GetInput() -> decltype( _process.template GetInput< input >() );
 
   template< uint_fast16_t output >
-  auto GetOutput()
-  -> decltype( _process.template GetOutput< output >() );
+  auto GetOutput() -> decltype( _process.template GetOutput< output >() );
 
 public:
   static const uint_fast16_t inputCount = PT::inputCount;
@@ -115,7 +113,7 @@ void R11Component< PT >::SetInput( const T& value )
 {
   if( threadCount_ > 0 )
   {
-    threads_[currentThread_].Sync();
+    threads_[ currentThread_ ].Sync();
     _process.template SetInput< input >( value, currentThread_ );
   }
   else
@@ -127,18 +125,17 @@ void R11Component< PT >::SetInput( const T& value )
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-template< uint_fast16_t output >
-auto R11Component< PT >::GetInput()
--> decltype( _process.template GetInput< output >() )
+template< uint_fast16_t input >
+auto R11Component< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
 {
   if( threadCount_ > 0 )
   {
-    threads_[currentThread_].Sync();
-    return _process.template GetInput< output >( currentThread_ );
+    threads_[ currentThread_ ].Sync();
+    return _process.template GetInput< input >( currentThread_ );
   }
   else
   {
-    return _process.template GetInput< output >();
+    return _process.template GetInput< input >();
   }
 }
 
@@ -146,12 +143,11 @@ auto R11Component< PT >::GetInput()
 
 template< typename PT >
 template< uint_fast16_t output >
-auto R11Component< PT >::GetOutput()
--> decltype( _process.template GetOutput< output >() )
+auto R11Component< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
 {
   if( threadCount_ > 0 )
   {
-    threads_[currentThread_].Sync();
+    threads_[ currentThread_ ].Sync();
     return _process.template GetOutput< output >( currentThread_ );
   }
   else
@@ -165,8 +161,8 @@ auto R11Component< PT >::GetOutput()
 template< typename PT >
 void R11Component< PT >::_ThreadTick()
 {
-  threads_[currentThread_].Sync();
-  threads_[currentThread_].Resume();
+  threads_[ currentThread_ ].Sync();
+  threads_[ currentThread_ ].Resume();
   ++currentThread_ %= threadCount_;
 }
 

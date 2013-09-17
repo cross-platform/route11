@@ -49,8 +49,7 @@ public:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t input >
-  auto GetInput( int_fast8_t threadNo = -1 )
-  -> decltype( _process.template GetInput< input >( threadNo ) )
+  auto GetInput( int_fast8_t threadNo = -1 ) -> decltype( _process.template GetInput< input >( threadNo ) )
   {
     return _process.template GetInput< input >( threadNo );
   }
@@ -58,8 +57,7 @@ public:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t output >
-  auto GetOutput( int_fast8_t threadNo = -1 )
-  -> decltype( _process.template GetOutput< output >( threadNo ) )
+  auto GetOutput( int_fast8_t threadNo = -1 ) -> decltype( _process.template GetOutput< output >( threadNo ) )
   {
     return _process.template GetOutput< output >( threadNo );
   }

@@ -31,12 +31,10 @@ public:
   void SetInput( const T& value, int_fast8_t bufferNo = -1 );
 
   template< uint_fast16_t input >
-  auto GetInput( int_fast8_t bufferNo = -1 )
-  -> decltype( std::get< input >( Policy::input_ ) );
+  auto GetInput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< input >( Policy::input_ ) );
 
   template< uint_fast16_t output >
-  auto GetOutput( int_fast8_t bufferNo = -1 )
-  -> decltype( std::get< output >( Policy::output_ ) );
+  auto GetOutput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< output >( Policy::output_ ) );
 
 public:
   static const uint_fast16_t inputCount = std::tuple_size< decltype( R11Process::input_ ) >::value;
@@ -128,8 +126,7 @@ void R11Process< Policy >::SetInput( const T& value, int_fast8_t bufferNo )
 
 template< typename Policy >
 template< uint_fast16_t input >
-auto R11Process< Policy >::GetInput( int_fast8_t bufferNo )
--> decltype( std::get< input >( Policy::input_ ) )
+auto R11Process< Policy >::GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( Policy::input_ ) )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
@@ -145,8 +142,7 @@ auto R11Process< Policy >::GetInput( int_fast8_t bufferNo )
 
 template< typename Policy >
 template< uint_fast16_t output >
-auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo )
--> decltype( std::get< output >( Policy::output_ ) )
+auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( Policy::output_ ) )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {

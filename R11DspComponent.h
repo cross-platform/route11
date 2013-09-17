@@ -16,10 +16,24 @@ namespace Route11
 template< typename CT >
 class R11DspComponent final : public DspComponent
 {
+private:
+  CT _component;
+
 public:
   explicit R11DspComponent( int_fast8_t threadCount = 0 );
 
   void SetThreadCount( int_fast8_t threadCount );
+
+
+
+  template< uint_fast16_t input, typename T >
+  void SetInput( const T& value );
+
+  template< uint_fast16_t input >
+  auto GetInput() -> decltype( _component.template GetInput< input >() );
+
+  template< uint_fast16_t output >
+  auto GetOutput() -> decltype( _component.template GetOutput< output >() );
 
 protected:
   virtual void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override;
@@ -43,8 +57,6 @@ private:
   };
 
 private:
-  CT _component;
-
   _StaticLoop< 0, CT::inputCount > _inputsLooper;
   _StaticLoop< 0, CT::outputCount > _outputsLooper;
 };
@@ -73,6 +85,43 @@ void R11DspComponent< CT >::SetThreadCount( int_fast8_t threadCount )
   PauseAutoTick();
   _component.SetThreadCount( threadCount );
   ResumeAutoTick();
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename CT >
+template< uint_fast16_t input, typename T >
+void R11DspComponent< CT >::SetInput( const T& value )
+{
+  PauseAutoTick();
+  _component.template SetInput< input >( value );
+  ResumeAutoTick();
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename CT >
+template< uint_fast16_t input >
+auto R11DspComponent< CT >::GetInput() -> decltype( _component.template GetInput< input >() )
+{
+  PauseAutoTick();
+  auto returnValue = _component.template GetInput< input >();
+  ResumeAutoTick();
+
+  return returnValue;
+}
+
+//-----------------------------------------------------------------------------
+
+template< typename CT >
+template< uint_fast16_t output >
+auto R11DspComponent< CT >::GetOutput() -> decltype( _component.template GetOutput< output >() )
+{
+  PauseAutoTick();
+  auto returnValue = _component.template GetOutput< output >();
+  PauseAutoTick();
+
+  return returnValue;
 }
 
 //=============================================================================
