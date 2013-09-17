@@ -26,9 +26,9 @@ public:
 
   void Resume();
 
-  void Stop();
-
 private:
+  void _Stop();
+
   void _ThreadTick();
 
 private:
@@ -52,7 +52,7 @@ R11ComponentThread::R11ComponentThread( const R11ComponentThread& other ) {}
 
 R11ComponentThread::~R11ComponentThread()
 {
-  Stop();
+  _Stop();
 }
 
 //=============================================================================
@@ -90,9 +90,9 @@ void R11ComponentThread::Resume()
   _resumeMutex.unlock();
 }
 
-//-----------------------------------------------------------------------------
+//=============================================================================
 
-void R11ComponentThread::Stop()
+void R11ComponentThread::_Stop()
 {
   _stop = true;
 
@@ -106,7 +106,7 @@ void R11ComponentThread::Stop()
   _thread.join();
 }
 
-//=============================================================================
+//-----------------------------------------------------------------------------
 
 void R11ComponentThread::_ThreadTick()
 {
