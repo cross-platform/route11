@@ -1,11 +1,5 @@
-#ifndef R11COMPONENTLOOP_H
-#define R11COMPONENTLOOP_H
-
-//-----------------------------------------------------------------------------
-
-#include "R11ComponentBase.h"
-
-#include <thread>
+#ifndef R11PROCESSLOOP_H
+#define R11PROCESSLOOP_H
 
 //-----------------------------------------------------------------------------
 
@@ -15,18 +9,13 @@ namespace Route11
 template< unsigned int CinputCount, unsigned int CoutputCount, typename CT,
           unsigned int fromOutput, unsigned int... toInput >
 
-class R11ComponentLoop : public R11ComponentBase
+class R11ProcessLoop
 {
   static_assert( CinputCount <= CT::inputCount, "Input count provided is larger than available inputs" );
   static_assert( CoutputCount <= CT::outputCount, "Output count provided is larger than available outputs" );
 
 private:
-  CT _component;
-
-  virtual std::function< void( char ) > GetTickMethod( char threadIndex ) final
-  {
-    return std::bind( &R11ComponentLoop::Tick, this, threadIndex );
-  }
+  CT _process;
 
 private:
   template< int output, int input, int nextOutput, int... nextInput >
@@ -39,40 +28,38 @@ private:
   template< int output, int input >
   void _TransferSignals( char threadNo = -1 )
   {
-    _component.template SetInput< input >( _component.template GetOutput< output >( threadNo ), threadNo );
+    _process.template SetInput< input >( _process.template GetOutput< output >( threadNo ), threadNo );
   }
 
 public:
+  void SetBufferCount( char bufferCount )
+  {
+    _process.SetBufferCount( bufferCount );
+  }
+
   void Tick( char threadNo = -1 )
   {
-    if( threadNo == -1 && threadCount_ > 0 )
-    {
-      ThreadTick();
-    }
-    else
-    {
-      _component.Tick( threadNo );
+    _process.Tick( threadNo );
 
-      _TransferSignals< fromOutput, toInput... >( threadNo );
-    }
+    _TransferSignals< fromOutput, toInput... >( threadNo );
   }
 
   template< int input, typename T >
   void SetInput( const T& value, char threadNo = -1 )
   {
-    _component.template SetInput< input >( value, threadNo );
+    _process.template SetInput< input >( value, threadNo );
   }
 
   template< int input >
-  auto GetInput( char threadNo = -1 ) -> decltype( _component.template GetInput< input >( threadNo ) )
+  auto GetInput( char threadNo = -1 ) -> decltype( _process.template GetInput< input >( threadNo ) )
   {
-    return _component.template GetInput< input >( threadNo );
+    return _process.template GetInput< input >( threadNo );
   }
 
   template< int output >
-  auto GetOutput( char threadNo = -1 ) -> decltype( _component.template GetOutput< output >( threadNo ) )
+  auto GetOutput( char threadNo = -1 ) -> decltype( _process.template GetOutput< output >( threadNo ) )
   {
-    return _component.template GetOutput< output >( threadNo );
+    return _process.template GetOutput< output >( threadNo );
   }
 
   static const unsigned int inputCount = CinputCount;
@@ -83,4 +70,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif // R11COMPONENTLOOP_H
+#endif // R11PROCESSLOOP_H

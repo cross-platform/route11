@@ -8,47 +8,30 @@
 #include <condition_variable>
 
 //-----------------------------------------------------------------------------
+
 namespace Route11
 {
 
 class R11ComponentThread
 {
 private:
-  std::function< void( char ) > _function = nullptr;
+  std::function< void( char ) > _processTick = nullptr;
 
   bool _stop = false;
   bool _stopped = false;
   bool _gotResume = false;
-  bool _gotSync = false;
+  bool _gotSync = true;
   std::mutex _resumeMutex;
   std::condition_variable_any _resumeCondt;
   std::condition_variable_any _syncCondt;
   std::thread _thread = std::thread( &R11ComponentThread::_ThreadTick, this );
 
 private:
-  void _Sync()
-  {
-    _resumeMutex.lock();
-
-    // wait for sync
-    if( !_gotSync ) // if haven't already got sync
-    {
-      _syncCondt.wait( _resumeMutex ); // wait for sync
-    }
-    _gotSync = false; // reset the sync flag
-
-    // notify resume
-    _gotResume = true; // set the resume flag
-    _resumeCondt.notify_all();
-
-    _resumeMutex.unlock();
-  }
-
   void _ThreadTick()
   {
     while( !_stop )
     {
-      _resumeMutex.lock();;
+      _resumeMutex.lock();
 
       // notify sync
       _gotSync = true; // set the sync flag
@@ -63,9 +46,9 @@ private:
 
       _resumeMutex.unlock();
 
-      if( !_stop && _function != nullptr )
+      if( !_stop && _processTick != nullptr )
       {
-        _function( 0 );
+        _processTick( 0 );
       }
     }
 
@@ -76,17 +59,13 @@ public:
   R11ComponentThread() = default;
   R11ComponentThread( const R11ComponentThread& other ) {}
 
-  void Initialise( std::function< void( char ) > function )
-  {
-    _function = function;
-  }
-
-  ~R11ComponentThread()
+  void Stop()
   {
     _stop = true;
 
     while( !_stopped )
     {
+      _syncCondt.notify_all();
       _resumeCondt.notify_all();
       std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
     }
@@ -94,9 +73,38 @@ public:
     _thread.join();
   }
 
-  void Tick()
+  void Sync()
   {
-    _Sync();
+    _resumeMutex.lock();
+
+    if( !_gotSync ) // if haven't already got sync
+    {
+      _syncCondt.wait( _resumeMutex ); // wait for sync
+    }
+
+    _resumeMutex.unlock();
+  }
+
+  void Resume()
+  {
+    _resumeMutex.lock();
+
+    _gotSync = false; // reset the sync flag
+
+    _gotResume = true; // set the resume flag
+    _resumeCondt.notify_all();
+
+    _resumeMutex.unlock();
+  }
+
+  void Initialise( std::function< void( char ) > processTick )
+  {
+    _processTick = processTick;
+  }
+
+  ~R11ComponentThread()
+  {
+    Stop();
   }
 };
 

@@ -4,8 +4,9 @@
 //-----------------------------------------------------------------------------
 
 #include "R11Component.h"
-#include "R11ComponentLoop.h"
-#include "R11ComponentPair.h"
+#include "R11Process.h"
+#include "R11ProcessLoop.h"
+#include "R11ProcessPair.h"
 
 //-----------------------------------------------------------------------------
 

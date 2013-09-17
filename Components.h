@@ -3,51 +3,66 @@
 
 //-----------------------------------------------------------------------------
 
-class BoolGenerator
+#include "Processes.h"
+#include "Route11.h"
+
+using Route11::R11Process;
+using Route11::R11ProcessLoop;
+using Route11::R11ProcessPair;
+using Route11::R11Component;
+
+//-----------------------------------------------------------------------------
+
+class _BoolsPrinter
 {
-protected:
-  ~BoolGenerator() = default;
+private:
+  using BoolInverterPair = R11ProcessPair<
+  1, 1, R11Process< BoolInverter >,
+  1, 1, R11Process< BoolInverter > >;
 
-  void Process()
-  {
-    std::get<0>( output_ ) = true;
-    std::get<1>( output_ ) = false;
-  }
+  using BoolInverterLoop = R11ProcessLoop<
+  2, 2, BoolInverterPair,
+  1, 1 >;
 
-  std::tuple<> input_;
-  std::tuple< bool, bool > output_ { false, false };
+  using BoolInvertedGen = R11ProcessPair<
+  0, 2, R11Process< BoolGenerator >,
+  2, 2, BoolInverterLoop,
+  0, 0 >;
+
+  using BoolPrinterPair = R11ProcessPair<
+  1, 0, R11Process< BoolPrinter >,
+  1, 0, R11Process< BoolPrinter > >;
+
+  using BoolsPrinter = R11ProcessPair<
+  2, 4, BoolInvertedGen,
+  2, 0, BoolPrinterPair,
+  2, 0,
+  3, 1 >;
+
+public:
+  using T = R11Component< BoolsPrinter >;
 };
 
 //-----------------------------------------------------------------------------
 
-class BoolInverter
+class BoolsPrinter : public _BoolsPrinter::T
 {
-protected:
-  ~BoolInverter() = default;
-
-  void Process()
+public:
+  enum Inputs
   {
-    std::get<0>( output_ ) = !std::get<0>( input_ );
-  }
+    inInv1,
+    inInv2,
+    inPrn1,
+    inPrn2
+  };
 
-  std::tuple< bool > output_ { false };
-  std::tuple< bool > input_ { false };
-};
-
-//-----------------------------------------------------------------------------
-
-class BoolPrinter
-{
-protected:
-  ~BoolPrinter() = default;
-
-  void Process()
+  enum Outputs
   {
-    std::cout << std::get<0>( input_ ) << '\n';
-  }
-
-  std::tuple< bool > input_ { false };
-  std::tuple<> output_;
+    outGen1,
+    outGen2,
+    outInv1,
+    outInv2
+  };
 };
 
 //-----------------------------------------------------------------------------

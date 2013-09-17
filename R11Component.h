@@ -3,45 +3,107 @@
 
 //-----------------------------------------------------------------------------
 
+#include "R11ComponentThread.h"
+
+#include <vector>
+
+//-----------------------------------------------------------------------------
+
 namespace Route11
 {
 
-template< typename Policy >
-class R11Component : public Policy
+template< typename Process >
+class R11Component
 {
-  static_assert( !std::is_destructible< Policy >::value, "Component policy should not be destructible" );
-
 private:
-  bool _ticked = false;
+  Process _process;
+
+  std::vector< R11ComponentThread > threads_;
+  char threadCount_ = 0;
+  char currentThread_ = 0;
+
+  void ThreadTick()
+  {
+    threads_[currentThread_].Sync();
+    threads_[currentThread_].Resume();
+    ++currentThread_ %= threadCount_;
+  }
+
+  //-----------------------------------------------------------------------------
 
 public:
-  using Policy::Policy;
-
-  void Tick( char threadNo = -1 )
+  ~R11Component()
   {
-    Policy::Process();
+    SetThreadCount( 0 );
   }
+
+  void SetThreadCount( char threadCount )
+  {
+    while( threadCount_ != 0 && currentThread_ != 0 )
+    {
+      ThreadTick();
+    }
+
+    for( auto& thread : threads_ )
+    {
+      thread.Sync();
+    }
+
+    threadCount_ = 0;
+
+    threads_.resize( threadCount );
+
+    for( unsigned char i = 0; i < threads_.size(); ++i )
+    {
+      threads_[i].Initialise( std::bind( &Process::Tick, &_process, i ) );
+    }
+
+    _process.SetBufferCount( threadCount );
+
+    threadCount_ = threadCount;
+  }
+
+  //-----------------------------------------------------------------------------
+
+  void Tick()
+  {
+    if( threadCount_ > 0 )
+    {
+      ThreadTick();
+    }
+    else
+    {
+      _process.Tick();
+    }
+  }
+
+  //-----------------------------------------------------------------------------
 
   template< int input, typename T >
-  void SetInput( const T& value, char threadNo = -1 )
+  void SetInput( const T& value )
   {
-    std::get< input >( Policy::input_ ) = value;
+    _process.template SetInput< input >( value );
   }
 
-  template< int input >
-  auto GetInput( char threadNo = -1 ) -> decltype( std::get< input >( Policy::input_ ) )
-  {
-    return std::get< input >( Policy::input_ );
-  }
+  //-----------------------------------------------------------------------------
 
   template< int output >
-  auto GetOutput( char threadNo = -1 ) -> decltype( std::get< output >( Policy::output_ ) )
+  auto GetInput() -> decltype( _process.template GetInput< output >() )
   {
-    return std::get< output >( Policy::output_ );
+    return _process.template GetInput< output >();
   }
 
-  static const unsigned int inputCount = std::tuple_size< decltype( R11Component::input_ ) >::value;
-  static const unsigned int outputCount = std::tuple_size< decltype( R11Component::output_ ) >::value;
+  //-----------------------------------------------------------------------------
+
+  template< int output >
+  auto GetOutput() -> decltype( _process.template GetOutput< output >() )
+  {
+    return _process.template GetOutput< output >();
+  }
+
+public:
+  static const unsigned int inputCount = Process::inputCount;
+  static const unsigned int outputCount = Process::outputCount;
 };
 
 }

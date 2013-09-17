@@ -1,9 +1,5 @@
-#ifndef R11COMPONENTPAIR_H
-#define R11COMPONENTPAIR_H
-
-//-----------------------------------------------------------------------------
-
-#include "R11ComponentBase.h"
+#ifndef R11PROCESSPAIR_H
+#define R11PROCESSPAIR_H
 
 //-----------------------------------------------------------------------------
 
@@ -14,7 +10,7 @@ template< unsigned int C1inputCount, unsigned int C1outputCount, typename C1T,
           unsigned int C2inputCount, unsigned int C2outputCount, typename C2T,
           unsigned int C1fromOutput = 0, unsigned int... C2toInput >
 
-class R11ComponentPair : public R11ComponentBase
+class R11ProcessPair
 {
   static_assert( C1inputCount <= C1T::inputCount, "Input count provided for C1 is larger than available inputs" );
   static_assert( C1outputCount <= C1T::outputCount, "Output count provided for C1 is larger than available outputs" );
@@ -24,7 +20,7 @@ class R11ComponentPair : public R11ComponentBase
   //-----------------------------------------------------------------------------
 
 private:
-  std::pair< C1T, C2T > _components;
+  std::pair< C1T, C2T > _processes;
 
   //-----------------------------------------------------------------------------
 
@@ -65,7 +61,7 @@ private:
   template< int output, int input >
   void _TransferSignals( char threadNo = -1 )
   {
-    _components.second.template SetInput< input >( _components.first.template GetOutput< output >( threadNo ), threadNo );
+    _processes.second.template SetInput< input >( _processes.first.template GetOutput< output >( threadNo ), threadNo );
   }
 
   template< int oddIndex >
@@ -73,44 +69,44 @@ private:
 
   //-----------------------------------------------------------------------------
 
-  virtual std::function< void( char ) > GetTickMethod( char threadIndex ) final
+public:
+  void SetBufferCount( char bufferCount )
   {
-    return std::bind( &R11ComponentPair::Tick, this, threadIndex );
+    _processes.first.SetBufferCount( bufferCount );
+    _processes.second.SetBufferCount( bufferCount );
   }
 
-public:
   void Tick( char threadNo = -1 )
   {
-    if( threadNo == -1 && threadCount_ > 0 )
-    {
-      ThreadTick();
-    }
-    else
-    {
-      _components.first.Tick( threadNo );
+    _processes.first.Tick( threadNo );
 
-      _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
+    _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
 
-      _components.second.Tick( threadNo );
-    }
+    _processes.second.Tick( threadNo );
   }
+
+  //-----------------------------------------------------------------------------
 
   template< int input, typename T >
   void SetInput( const T& value, char threadNo = -1 )
   {
-    std::get< _ToComp< input >() >( _components ).template SetInput< _ToIndex< input >() >( value, threadNo );
+    std::get< _ToComp< input >() >( _processes ).template SetInput< _ToIndex< input >() >( value, threadNo );
   }
+
+  //-----------------------------------------------------------------------------
 
   template< int input >
-  auto GetInput( char threadNo = -1 ) -> decltype( std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >( threadNo ) )
+  auto GetInput( char threadNo = -1 ) -> decltype( std::get< _ToComp< input >() >( _processes ).template GetInput< _ToIndex< input >() >( threadNo ) )
   {
-    return std::get< _ToComp< input >() >( _components ).template GetInput< _ToIndex< input >() >( threadNo );
+    return std::get< _ToComp< input >() >( _processes ).template GetInput< _ToIndex< input >() >( threadNo );
   }
 
+  //-----------------------------------------------------------------------------
+
   template< int output >
-  auto GetOutput( char threadNo = -1 ) -> decltype( std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >( threadNo ) )
+  auto GetOutput( char threadNo = -1 ) -> decltype( std::get< _FromComp< output >() >( _processes ).template GetOutput< _FromIndex< output >() >( threadNo ) )
   {
-    return std::get< _FromComp< output >() >( _components ).template GetOutput< _FromIndex< output >() >( threadNo );
+    return std::get< _FromComp< output >() >( _processes ).template GetOutput< _FromIndex< output >() >( threadNo );
   }
 
   //-----------------------------------------------------------------------------
@@ -124,4 +120,4 @@ public:
 
 //-----------------------------------------------------------------------------
 
-#endif // R11COMPONENTPAIR_H
+#endif // R11PROCESSPAIR_H

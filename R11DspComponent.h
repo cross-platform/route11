@@ -67,7 +67,9 @@ public:
 
   void SetThreadCount( char threadCount )
   {
+    PauseAutoTick();
     _component.SetThreadCount( threadCount );
+    ResumeAutoTick();
   }
 
   void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override

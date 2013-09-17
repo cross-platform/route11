@@ -7,15 +7,15 @@ CONFIG += c++11
 SOURCES += main.cpp
 
 HEADERS += \
-    Circuits.h \
-    Components.h \
-    R11Component.h \
-    R11ComponentLoop.h \
-    R11ComponentPair.h \
     R11DspComponent.h \
     Route11.h \
-    R11ComponentBase.h \
-    R11ComponentThread.h
+    R11ComponentThread.h \
+    R11Process.h \
+    R11ProcessPair.h \
+    R11ProcessLoop.h \
+    R11Component.h \
+    Processes.h \
+    Components.h
 
 INCLUDEPATH += "/home/marcus/Projects/DSPatch/include"
 
