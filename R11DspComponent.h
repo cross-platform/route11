@@ -20,6 +20,7 @@ public:
 
   void SetThreadCount( char threadCount );
 
+protected:
   virtual void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override;
 
 private:
@@ -66,7 +67,7 @@ void R11DspComponent< CT >::SetThreadCount( char threadCount )
   ResumeAutoTick();
 }
 
-//-----------------------------------------------------------------------------
+//=============================================================================
 
 template< typename CT >
 void R11DspComponent< CT >::Process_( DspSignalBus& inputs, DspSignalBus& outputs )

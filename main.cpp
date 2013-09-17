@@ -30,6 +30,11 @@ int main()
   x.SetThreadCount( 10 );
   y.SetThreadCount( 10 );
 
+  DspCircuit circuit;
+  circuit.AddComponent( y );
+  circuit.SetThreadCount( 12 );
+  circuit.StartAutoTick();
+
   x.Tick();
   x.SetThreadCount( 12 );
   x.Tick();
