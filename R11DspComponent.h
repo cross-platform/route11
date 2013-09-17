@@ -24,8 +24,6 @@ public:
 
   void SetThreadCount( int_fast8_t threadCount );
 
-
-
   template< uint_fast16_t input, typename T >
   void SetInput( const T& value );
 
