@@ -4,6 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include <condition_variable>
+#include <cstdint>
 #include <deque>
 #include <thread>
 #include <tuple>
@@ -22,33 +23,33 @@ class R11Process : public Policy
 public:
   using Policy::Policy;
 
-  void SetBufferCount( char bufferCount );
+  void SetBufferCount( int_fast8_t bufferCount );
 
-  void Tick( char bufferNo = -1 );
+  void Tick( int_fast8_t bufferNo = -1 );
 
-  template< int input, typename T >
-  void SetInput( const T& value, char bufferNo = -1 );
+  template< uint_fast16_t input, typename T >
+  void SetInput( const T& value, int_fast8_t bufferNo = -1 );
 
-  template< int input >
-  auto GetInput( char bufferNo = -1 )
+  template< uint_fast16_t input >
+  auto GetInput( int_fast8_t bufferNo = -1 )
   -> decltype( std::get< input >( Policy::input_ ) );
 
-  template< int output >
-  auto GetOutput( char bufferNo = -1 )
+  template< uint_fast16_t output >
+  auto GetOutput( int_fast8_t bufferNo = -1 )
   -> decltype( std::get< output >( Policy::output_ ) );
 
 public:
-  static const unsigned int inputCount = std::tuple_size< decltype( R11Process::input_ ) >::value;
-  static const unsigned int outputCount = std::tuple_size< decltype( R11Process::output_ ) >::value;
+  static const uint_fast16_t inputCount = std::tuple_size< decltype( R11Process::input_ ) >::value;
+  static const uint_fast16_t outputCount = std::tuple_size< decltype( R11Process::output_ ) >::value;
 
 private:
-  void _WaitForRelease( char bufferNo );
-  void _ReleaseBuffer( char bufferNo );
+  void _WaitForRelease( int_fast8_t bufferNo );
+  void _ReleaseBuffer( int_fast8_t bufferNo );
 
 private:
   bool _ticked = false;
 
-  char _bufferCount = 0;
+  int_fast8_t _bufferCount = 0;
   std::vector< decltype( R11Process::input_ ) > _inputBuffers;
   std::vector< decltype( R11Process::output_ ) > _outputBuffers;
 
@@ -61,7 +62,7 @@ private:
 //=============================================================================
 
 template< typename Policy >
-void R11Process< Policy >::SetBufferCount( char bufferCount )
+void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
 {
   if( bufferCount < 0 || bufferCount == _bufferCount )
   {
@@ -90,7 +91,7 @@ void R11Process< Policy >::SetBufferCount( char bufferCount )
 //-----------------------------------------------------------------------------
 
 template< typename Policy >
-void R11Process< Policy >::Tick( char bufferNo )
+void R11Process< Policy >::Tick( int_fast8_t bufferNo )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
@@ -110,8 +111,8 @@ void R11Process< Policy >::Tick( char bufferNo )
 //-----------------------------------------------------------------------------
 
 template< typename Policy >
-template< int input, typename T >
-void R11Process< Policy >::SetInput( const T& value, char bufferNo )
+template< uint_fast16_t input, typename T >
+void R11Process< Policy >::SetInput( const T& value, int_fast8_t bufferNo )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
@@ -126,8 +127,8 @@ void R11Process< Policy >::SetInput( const T& value, char bufferNo )
 //-----------------------------------------------------------------------------
 
 template< typename Policy >
-template< int input >
-auto R11Process< Policy >::GetInput( char bufferNo )
+template< uint_fast16_t input >
+auto R11Process< Policy >::GetInput( int_fast8_t bufferNo )
 -> decltype( std::get< input >( Policy::input_ ) )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
@@ -143,8 +144,8 @@ auto R11Process< Policy >::GetInput( char bufferNo )
 //-----------------------------------------------------------------------------
 
 template< typename Policy >
-template< int output >
-auto R11Process< Policy >::GetOutput( char bufferNo )
+template< uint_fast16_t output >
+auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo )
 -> decltype( std::get< output >( Policy::output_ ) )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
@@ -160,7 +161,7 @@ auto R11Process< Policy >::GetOutput( char bufferNo )
 //=============================================================================
 
 template< typename Policy >
-void R11Process< Policy >::_WaitForRelease( char bufferNo )
+void R11Process< Policy >::_WaitForRelease( int_fast8_t bufferNo )
 {
   _releaseMutexes[bufferNo].lock();
   if( !_gotReleases[bufferNo] )
@@ -174,7 +175,7 @@ void R11Process< Policy >::_WaitForRelease( char bufferNo )
 //=============================================================================
 
 template< typename Policy >
-void R11Process< Policy >::_ReleaseBuffer( char bufferNo )
+void R11Process< Policy >::_ReleaseBuffer( int_fast8_t bufferNo )
 {
   if( _bufferCount > 0 )
   {

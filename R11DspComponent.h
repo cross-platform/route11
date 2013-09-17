@@ -5,6 +5,7 @@
 
 #include "DSPatch.h"
 
+#include <cstdint>
 #include <functional>
 
 //=============================================================================
@@ -18,14 +19,14 @@ class R11DspComponent : public DspComponent
 public:
   R11DspComponent();
 
-  void SetThreadCount( char threadCount );
+  void SetThreadCount( int_fast8_t threadCount );
 
 protected:
   virtual void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override;
 
 private:
   // Fancy little trick to get around function template specialization within a class
-  template< int First, int Size >
+  template< uint_fast16_t First, uint_fast16_t Size >
   struct _StaticLoop
   {
     void AddIos( std::function< void() > addMethod );
@@ -33,7 +34,7 @@ private:
     void FillOutputs( CT& component, DspSignalBus& outputs );
   };
 
-  template< int N >
+  template< uint_fast16_t N >
   struct _StaticLoop< N, N >
   {
     void AddIos( std::function< void() > addMethod ) {}
@@ -60,7 +61,7 @@ R11DspComponent< CT >::R11DspComponent()
 //=============================================================================
 
 template< typename CT >
-void R11DspComponent< CT >::SetThreadCount( char threadCount )
+void R11DspComponent< CT >::SetThreadCount( int_fast8_t threadCount )
 {
   if( threadCount < 0 )
   {
@@ -87,7 +88,7 @@ void R11DspComponent< CT >::Process_( DspSignalBus& inputs, DspSignalBus& output
 //=============================================================================
 
 template< typename CT >
-template< int First, int Size >
+template< uint_fast16_t First, uint_fast16_t Size >
 void R11DspComponent< CT >::_StaticLoop< First, Size >::AddIos( std::function< void() > addMethod )
 {
   addMethod();
@@ -98,7 +99,7 @@ void R11DspComponent< CT >::_StaticLoop< First, Size >::AddIos( std::function< v
 //-----------------------------------------------------------------------------
 
 template< typename CT >
-template< int First, int Size >
+template< uint_fast16_t First, uint_fast16_t Size >
 void R11DspComponent< CT >::_StaticLoop< First, Size >::FillInputs( CT& component, DspSignalBus& inputs )
 {
   auto input = component.template GetInput< First >();
@@ -112,7 +113,7 @@ void R11DspComponent< CT >::_StaticLoop< First, Size >::FillInputs( CT& componen
 //-----------------------------------------------------------------------------
 
 template< typename CT >
-template< int First, int Size >
+template< uint_fast16_t First, uint_fast16_t Size >
 void R11DspComponent< CT >::_StaticLoop< First, Size >::FillOutputs( CT& component, DspSignalBus& outputs )
 {
   outputs.SetValue( First, component.template GetOutput< First >() );

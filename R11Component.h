@@ -5,6 +5,7 @@
 
 #include "R11ComponentThread.h"
 
+#include <cstdint>
 #include <vector>
 
 //=============================================================================
@@ -21,32 +22,32 @@ private:
 public:
   ~R11Component();
 
-  void SetThreadCount( char threadCount );
+  void SetThreadCount( int_fast8_t threadCount );
 
   void Tick();
 
-  template< int input, typename T >
+  template< uint_fast16_t input, typename T >
   void SetInput( const T& value );
 
-  template< int output >
+  template< uint_fast16_t output >
   auto GetInput()
   -> decltype( _process.template GetInput< output >() );
 
-  template< int output >
+  template< uint_fast16_t output >
   auto GetOutput()
   -> decltype( _process.template GetOutput< output >() );
 
 public:
-  static const unsigned int inputCount = PT::inputCount;
-  static const unsigned int outputCount = PT::outputCount;
+  static const uint_fast16_t inputCount = PT::inputCount;
+  static const uint_fast16_t outputCount = PT::outputCount;
 
 private:
   void _ThreadTick();
 
 private:
   std::vector< R11ComponentThread > threads_;
-  char threadCount_ = 0;
-  char currentThread_ = 0;
+  int_fast8_t threadCount_ = 0;
+  int_fast8_t currentThread_ = 0;
 };
 
 //=============================================================================
@@ -60,7 +61,7 @@ R11Component< PT >::~R11Component()
 //=============================================================================
 
 template< typename PT >
-void R11Component< PT >::SetThreadCount( char threadCount )
+void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
 {
   if( threadCount < 0 || threadCount == threadCount_ )
   {
@@ -81,7 +82,7 @@ void R11Component< PT >::SetThreadCount( char threadCount )
 
   threads_.resize( threadCount );
 
-  for( unsigned char i = 0; i < threads_.size(); ++i )
+  for( uint_fast8_t i = 0; i < threads_.size(); ++i )
   {
     threads_[i].Initialise( std::bind( &PT::Tick, &_process, i ) );
   }
@@ -109,7 +110,7 @@ void R11Component< PT >::Tick()
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-template< int input, typename T >
+template< uint_fast16_t input, typename T >
 void R11Component< PT >::SetInput( const T& value )
 {
   if( threadCount_ > 0 )
@@ -126,7 +127,7 @@ void R11Component< PT >::SetInput( const T& value )
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-template< int output >
+template< uint_fast16_t output >
 auto R11Component< PT >::GetInput()
 -> decltype( _process.template GetInput< output >() )
 {
@@ -144,7 +145,7 @@ auto R11Component< PT >::GetInput()
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-template< int output >
+template< uint_fast16_t output >
 auto R11Component< PT >::GetOutput()
 -> decltype( _process.template GetOutput< output >() )
 {

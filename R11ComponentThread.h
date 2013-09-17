@@ -20,7 +20,7 @@ public:
 
   ~R11ComponentThread();
 
-  void Initialise( std::function< void( char ) > tickMethod );
+  void Initialise( std::function< void( int_fast8_t ) > tickMethod );
 
   void Sync();
 
@@ -32,7 +32,7 @@ private:
   void _ThreadTick();
 
 private:
-  std::function< void( char ) > _tickMethod = nullptr;
+  std::function< void( int_fast8_t ) > _tickMethod = nullptr;
 
   bool _stop = false;
   bool _stopped = false;
@@ -57,7 +57,7 @@ R11ComponentThread::~R11ComponentThread()
 
 //=============================================================================
 
-void R11ComponentThread::Initialise( std::function< void( char ) > tickMethod )
+void R11ComponentThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
 {
   _tickMethod = tickMethod;
 }

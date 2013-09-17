@@ -8,10 +8,11 @@
 // USED 19
 // in-class initializers, override, static_assert, type traits, auto, decltype,
 // std::function, lambdas, tuples, uniform init, alias, = default / delete, constexpr,
-// variadic templates, inheriting constr, nullptr, std::threads, chrono, range-for
+// variadic templates, inheriting constr, nullptr, std::threads, chrono, range-for,
+// integer types
 
 // NOT USED 10
-// final, int24_t, delegating constr, enum classes, user-defined literals,
+// final, delegating constr, enum classes, user-defined literals,
 // safe pointers, std::array, expicit conv, STL algorithms, nonmember begin/end
 
 // NOT GOING TO USE 4

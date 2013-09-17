@@ -1,13 +1,17 @@
 #ifndef R11PROCESSLOOP_H
 #define R11PROCESSLOOP_H
 
+//-----------------------------------------------------------------------------
+
+#include <cstdint>
+
 //=============================================================================
 
 namespace Route11
 {
 
-template< unsigned int PinputCount, unsigned int PoutputCount, typename PT,
-          unsigned int fromOutput, unsigned int... toInput >
+template< uint_fast16_t PinputCount, uint_fast16_t PoutputCount, typename PT,
+          uint_fast16_t fromOutput, uint_fast16_t... toInput >
 
 class R11ProcessLoop
 {
@@ -20,14 +24,14 @@ private:
 public:
   //-----------------------------------------------------------------------------
 
-  void SetBufferCount( char bufferCount )
+  void SetBufferCount( int_fast8_t bufferCount )
   {
     _process.SetBufferCount( bufferCount );
   }
 
   //-----------------------------------------------------------------------------
 
-  void Tick( char threadNo = -1 )
+  void Tick( int_fast8_t threadNo = -1 )
   {
     _process.Tick( threadNo );
 
@@ -36,16 +40,16 @@ public:
 
   //-----------------------------------------------------------------------------
 
-  template< int input, typename T >
-  void SetInput( const T& value, char threadNo = -1 )
+  template< uint_fast16_t input, typename T >
+  void SetInput( const T& value, int_fast8_t threadNo = -1 )
   {
     _process.template SetInput< input >( value, threadNo );
   }
 
   //-----------------------------------------------------------------------------
 
-  template< int input >
-  auto GetInput( char threadNo = -1 )
+  template< uint_fast16_t input >
+  auto GetInput( int_fast8_t threadNo = -1 )
   -> decltype( _process.template GetInput< input >( threadNo ) )
   {
     return _process.template GetInput< input >( threadNo );
@@ -53,8 +57,8 @@ public:
 
   //-----------------------------------------------------------------------------
 
-  template< int output >
-  auto GetOutput( char threadNo = -1 )
+  template< uint_fast16_t output >
+  auto GetOutput( int_fast8_t threadNo = -1 )
   -> decltype( _process.template GetOutput< output >( threadNo ) )
   {
     return _process.template GetOutput< output >( threadNo );
@@ -63,14 +67,14 @@ public:
   //-----------------------------------------------------------------------------
 
 public:
-  static const unsigned int inputCount = PinputCount;
-  static const unsigned int outputCount = PoutputCount;
+  static const uint_fast16_t inputCount = PinputCount;
+  static const uint_fast16_t outputCount = PoutputCount;
 
 private:
   //-----------------------------------------------------------------------------
 
-  template< int output, int input, int nextOutput, int... nextInput >
-  void _TransferSignals( char threadNo = -1 )
+  template< uint_fast16_t output, uint_fast16_t input, uint_fast16_t nextOutput, uint_fast16_t... nextInput >
+  void _TransferSignals( int_fast8_t threadNo = -1 )
   {
     _TransferSignals< output, input >( threadNo );
     _TransferSignals< nextOutput, nextInput... >( threadNo );
@@ -78,8 +82,8 @@ private:
 
   //-----------------------------------------------------------------------------
 
-  template< int output, int input >
-  void _TransferSignals( char threadNo = -1 )
+  template< uint_fast16_t output, uint_fast16_t input >
+  void _TransferSignals( int_fast8_t threadNo = -1 )
   {
     _process.template SetInput< input >( _process.template GetOutput< output >( threadNo ), threadNo );
   }
