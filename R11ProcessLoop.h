@@ -45,7 +45,8 @@ public:
   //-----------------------------------------------------------------------------
 
   template< int input >
-  auto GetInput( char threadNo = -1 ) -> decltype( _process.template GetInput< input >( threadNo ) )
+  auto GetInput( char threadNo = -1 )
+  -> decltype( _process.template GetInput< input >( threadNo ) )
   {
     return _process.template GetInput< input >( threadNo );
   }
@@ -53,7 +54,8 @@ public:
   //-----------------------------------------------------------------------------
 
   template< int output >
-  auto GetOutput( char threadNo = -1 ) -> decltype( _process.template GetOutput< output >( threadNo ) )
+  auto GetOutput( char threadNo = -1 )
+  -> decltype( _process.template GetOutput< output >( threadNo ) )
   {
     return _process.template GetOutput< output >( threadNo );
   }

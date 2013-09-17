@@ -29,10 +29,12 @@ public:
   void SetInput( const T& value );
 
   template< int output >
-  auto GetInput() -> decltype( _process.template GetInput< output >() );
+  auto GetInput()
+  -> decltype( _process.template GetInput< output >() );
 
   template< int output >
-  auto GetOutput() -> decltype( _process.template GetOutput< output >() );
+  auto GetOutput()
+  -> decltype( _process.template GetOutput< output >() );
 
 public:
   static const unsigned int inputCount = PT::inputCount;
@@ -125,7 +127,8 @@ void R11Component< PT >::SetInput( const T& value )
 
 template< typename PT >
 template< int output >
-auto R11Component< PT >::GetInput() -> decltype( _process.template GetInput< output >() )
+auto R11Component< PT >::GetInput()
+-> decltype( _process.template GetInput< output >() )
 {
   if( threadCount_ > 0 )
   {
@@ -142,7 +145,8 @@ auto R11Component< PT >::GetInput() -> decltype( _process.template GetInput< out
 
 template< typename PT >
 template< int output >
-auto R11Component< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
+auto R11Component< PT >::GetOutput()
+-> decltype( _process.template GetOutput< output >() )
 {
   if( threadCount_ > 0 )
   {

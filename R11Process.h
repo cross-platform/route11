@@ -29,10 +29,12 @@ public:
   void SetInput( const T& value, char bufferNo = -1 );
 
   template< int input >
-  auto GetInput( char bufferNo = -1 ) -> decltype( std::get< input >( Policy::input_ ) );
+  auto GetInput( char bufferNo = -1 )
+  -> decltype( std::get< input >( Policy::input_ ) );
 
   template< int output >
-  auto GetOutput( char bufferNo = -1 ) -> decltype( std::get< output >( Policy::output_ ) );
+  auto GetOutput( char bufferNo = -1 )
+  -> decltype( std::get< output >( Policy::output_ ) );
 
 public:
   static const unsigned int inputCount = std::tuple_size< decltype( R11Process::input_ ) >::value;
@@ -124,7 +126,8 @@ void R11Process< Policy >::SetInput( const T& value, char bufferNo )
 
 template< typename Policy >
 template< int input >
-auto R11Process< Policy >::GetInput( char bufferNo ) -> decltype( std::get< input >( Policy::input_ ) )
+auto R11Process< Policy >::GetInput( char bufferNo )
+-> decltype( std::get< input >( Policy::input_ ) )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
@@ -140,7 +143,8 @@ auto R11Process< Policy >::GetInput( char bufferNo ) -> decltype( std::get< inpu
 
 template< typename Policy >
 template< int output >
-auto R11Process< Policy >::GetOutput( char bufferNo ) -> decltype( std::get< output >( Policy::output_ ) )
+auto R11Process< Policy >::GetOutput( char bufferNo )
+-> decltype( std::get< output >( Policy::output_ ) )
 {
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
