@@ -1,7 +1,7 @@
 #ifndef R11PROCESSPAIR_H
 #define R11PROCESSPAIR_H
 
-//-----------------------------------------------------------------------------
+//=============================================================================
 
 namespace Route11
 {
@@ -17,19 +17,16 @@ class R11ProcessPair
   static_assert( C2inputCount <= C2T::inputCount, "Input count provided for C2 is larger than available inputs" );
   static_assert( C2outputCount <= C2T::outputCount, "Output count provided for C2 is larger than available outputs" );
 
+private:
   //-----------------------------------------------------------------------------
 
-private:
-  std::pair< C1T, C2T > _processes;
-
-  //-----------------------------------------------------------------------------
-
-private:
   template< int input >
   static constexpr int _ToComp()
   {
     return input < C1inputCount ? 0 : 1;
   }
+
+  //-----------------------------------------------------------------------------
 
   template< int input >
   static constexpr int _ToIndex()
@@ -37,11 +34,15 @@ private:
     return input - ( input < C1inputCount ? 0 : C1inputCount );
   }
 
+  //-----------------------------------------------------------------------------
+
   template< int output >
   static constexpr int _FromComp()
   {
     return output < C1outputCount ? 0 : 1;
   }
+
+  //-----------------------------------------------------------------------------
 
   template< int output >
   static constexpr int _FromIndex()
@@ -51,30 +52,19 @@ private:
 
   //-----------------------------------------------------------------------------
 
-  template< int output, int input, int nextOutput, int... nextInput >
-  void _TransferSignals( char threadNo = -1 )
-  {
-    _TransferSignals< output, input >( threadNo );
-    _TransferSignals< nextOutput, nextInput... >( threadNo );
-  }
-
-  template< int output, int input >
-  void _TransferSignals( char threadNo = -1 )
-  {
-    _processes.second.template SetInput< input >( _processes.first.template GetOutput< output >( threadNo ), threadNo );
-  }
-
-  template< int oddIndex >
-  void _TransferSignals( char threadNo = -1 ) {}
-
-  //-----------------------------------------------------------------------------
+private:
+  std::pair< C1T, C2T > _processes;
 
 public:
+  //-----------------------------------------------------------------------------
+
   void SetBufferCount( char bufferCount )
   {
     _processes.first.SetBufferCount( bufferCount );
     _processes.second.SetBufferCount( bufferCount );
   }
+
+  //-----------------------------------------------------------------------------
 
   void Tick( char threadNo = -1 )
   {
@@ -114,10 +104,35 @@ public:
 public:
   static const unsigned int inputCount = C1inputCount + C2inputCount;
   static const unsigned int outputCount = C1outputCount + C2outputCount;
+
+private:
+  //-----------------------------------------------------------------------------
+
+  template< int output, int input, int nextOutput, int... nextInput >
+  void _TransferSignals( char threadNo = -1 )
+  {
+    _TransferSignals< output, input >( threadNo );
+    _TransferSignals< nextOutput, nextInput... >( threadNo );
+  }
+
+  //-----------------------------------------------------------------------------
+
+  template< int output, int input >
+  void _TransferSignals( char threadNo = -1 )
+  {
+    _processes.second.template SetInput< input >( _processes.first.template GetOutput< output >( threadNo ), threadNo );
+  }
+
+  //-----------------------------------------------------------------------------
+
+  template< int oddIndex >
+  void _TransferSignals( char threadNo = -1 ) {}
+
+  //-----------------------------------------------------------------------------
 };
 
 }
 
-//-----------------------------------------------------------------------------
+//=============================================================================
 
 #endif // R11PROCESSPAIR_H

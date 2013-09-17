@@ -7,26 +7,78 @@
 #include <thread>
 #include <condition_variable>
 
-//-----------------------------------------------------------------------------
+//=============================================================================
 
 namespace Route11
 {
 
 class R11ComponentThread
 {
-private:
-  std::function< void( char ) > _processTick = nullptr;
+public:
+  R11ComponentThread() = default;
+  R11ComponentThread( const R11ComponentThread& other ) {}
 
-  bool _stop = false;
-  bool _stopped = false;
-  bool _gotResume = false;
-  bool _gotSync = true;
-  std::mutex _resumeMutex;
-  std::condition_variable_any _resumeCondt;
-  std::condition_variable_any _syncCondt;
-  std::thread _thread = std::thread( &R11ComponentThread::_ThreadTick, this );
+  //-----------------------------------------------------------------------------
+
+  ~R11ComponentThread()
+  {
+    Stop();
+  }
+
+  //-----------------------------------------------------------------------------
+
+  void Initialise( std::function< void( char ) > tickMethod )
+  {
+    _tickMethod = tickMethod;
+  }
+
+  //-----------------------------------------------------------------------------
+
+  void Sync()
+  {
+    _resumeMutex.lock();
+
+    if( !_gotSync ) // if haven't already got sync
+    {
+      _syncCondt.wait( _resumeMutex ); // wait for sync
+    }
+
+    _resumeMutex.unlock();
+  }
+
+  //-----------------------------------------------------------------------------
+
+  void Resume()
+  {
+    _resumeMutex.lock();
+
+    _gotSync = false; // reset the sync flag
+
+    _gotResume = true; // set the resume flag
+    _resumeCondt.notify_all();
+
+    _resumeMutex.unlock();
+  }
+
+  //-----------------------------------------------------------------------------
+
+  void Stop()
+  {
+    _stop = true;
+
+    while( !_stopped )
+    {
+      _syncCondt.notify_all();
+      _resumeCondt.notify_all();
+      std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+    }
+
+    _thread.join();
+  }
 
 private:
+  //-----------------------------------------------------------------------------
+
   void _ThreadTick()
   {
     while( !_stop )
@@ -46,70 +98,32 @@ private:
 
       _resumeMutex.unlock();
 
-      if( !_stop && _processTick != nullptr )
+      if( !_stop && _tickMethod != nullptr )
       {
-        _processTick( 0 );
+        _tickMethod( 0 );
       }
     }
 
     _stopped = true;
   }
 
-public:
-  R11ComponentThread() = default;
-  R11ComponentThread( const R11ComponentThread& other ) {}
+  //-----------------------------------------------------------------------------
 
-  void Stop()
-  {
-    _stop = true;
+private:
+  std::function< void( char ) > _tickMethod = nullptr;
 
-    while( !_stopped )
-    {
-      _syncCondt.notify_all();
-      _resumeCondt.notify_all();
-      std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-    }
-
-    _thread.join();
-  }
-
-  void Sync()
-  {
-    _resumeMutex.lock();
-
-    if( !_gotSync ) // if haven't already got sync
-    {
-      _syncCondt.wait( _resumeMutex ); // wait for sync
-    }
-
-    _resumeMutex.unlock();
-  }
-
-  void Resume()
-  {
-    _resumeMutex.lock();
-
-    _gotSync = false; // reset the sync flag
-
-    _gotResume = true; // set the resume flag
-    _resumeCondt.notify_all();
-
-    _resumeMutex.unlock();
-  }
-
-  void Initialise( std::function< void( char ) > processTick )
-  {
-    _processTick = processTick;
-  }
-
-  ~R11ComponentThread()
-  {
-    Stop();
-  }
+  bool _stop = false;
+  bool _stopped = false;
+  bool _gotResume = false;
+  bool _gotSync = true;
+  std::mutex _resumeMutex;
+  std::condition_variable_any _resumeCondt;
+  std::condition_variable_any _syncCondt;
+  std::thread _thread = std::thread( &R11ComponentThread::_ThreadTick, this );
 };
 
 }
 
-//-----------------------------------------------------------------------------
+//=============================================================================
 
 #endif // R11COMPONENTTHREAD_H
