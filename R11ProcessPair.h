@@ -6,16 +6,16 @@
 namespace Route11
 {
 
-template< unsigned int C1inputCount, unsigned int C1outputCount, typename C1T,
-          unsigned int C2inputCount, unsigned int C2outputCount, typename C2T,
-          unsigned int C1fromOutput = 0, unsigned int... C2toInput >
+template< unsigned int P1inputCount, unsigned int P1outputCount, typename P1T,
+          unsigned int P2inputCount, unsigned int P2outputCount, typename P2T,
+          unsigned int P1fromOutput = 0, unsigned int... P2ToInput >
 
 class R11ProcessPair
 {
-  static_assert( C1inputCount <= C1T::inputCount, "Input count provided for C1 is larger than available inputs" );
-  static_assert( C1outputCount <= C1T::outputCount, "Output count provided for C1 is larger than available outputs" );
-  static_assert( C2inputCount <= C2T::inputCount, "Input count provided for C2 is larger than available inputs" );
-  static_assert( C2outputCount <= C2T::outputCount, "Output count provided for C2 is larger than available outputs" );
+  static_assert( P1inputCount <= P1T::inputCount, "Input count provided for P1 is larger than available inputs" );
+  static_assert( P1outputCount <= P1T::outputCount, "Output count provided for P1 is larger than available outputs" );
+  static_assert( P2inputCount <= P2T::inputCount, "Input count provided for P2 is larger than available inputs" );
+  static_assert( P2outputCount <= P2T::outputCount, "Output count provided for P2 is larger than available outputs" );
 
 private:
   //-----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ private:
   template< int input >
   static constexpr int _ToComp()
   {
-    return input < C1inputCount ? 0 : 1;
+    return input < P1inputCount ? 0 : 1;
   }
 
   //-----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ private:
   template< int input >
   static constexpr int _ToIndex()
   {
-    return input - ( input < C1inputCount ? 0 : C1inputCount );
+    return input - ( input < P1inputCount ? 0 : P1inputCount );
   }
 
   //-----------------------------------------------------------------------------
@@ -39,7 +39,7 @@ private:
   template< int output >
   static constexpr int _FromComp()
   {
-    return output < C1outputCount ? 0 : 1;
+    return output < P1outputCount ? 0 : 1;
   }
 
   //-----------------------------------------------------------------------------
@@ -47,13 +47,13 @@ private:
   template< int output >
   static constexpr int _FromIndex()
   {
-    return output - ( output < C1outputCount ? 0 : C1outputCount );
+    return output - ( output < P1outputCount ? 0 : P1outputCount );
   }
 
   //-----------------------------------------------------------------------------
 
 private:
-  std::pair< C1T, C2T > _processes;
+  std::pair< P1T, P2T > _processes;
 
 public:
   //-----------------------------------------------------------------------------
@@ -70,7 +70,7 @@ public:
   {
     _processes.first.Tick( threadNo );
 
-    _TransferSignals< C1fromOutput, C2toInput... >( threadNo );
+    _TransferSignals< P1fromOutput, P2ToInput... >( threadNo );
 
     _processes.second.Tick( threadNo );
   }
@@ -102,8 +102,8 @@ public:
   //-----------------------------------------------------------------------------
 
 public:
-  static const unsigned int inputCount = C1inputCount + C2inputCount;
-  static const unsigned int outputCount = C1outputCount + C2outputCount;
+  static const unsigned int inputCount = P1inputCount + P2inputCount;
+  static const unsigned int outputCount = P1outputCount + P2outputCount;
 
 private:
   //-----------------------------------------------------------------------------

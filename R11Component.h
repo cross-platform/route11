@@ -12,11 +12,11 @@
 namespace Route11
 {
 
-template< typename Process >
+template< typename PT >
 class R11Component
 {
 private:
-  Process _process;
+  PT _process;
 
 public:
   ~R11Component();
@@ -35,8 +35,8 @@ public:
   auto GetOutput() -> decltype( _process.template GetOutput< output >() );
 
 public:
-  static const unsigned int inputCount = Process::inputCount;
-  static const unsigned int outputCount = Process::outputCount;
+  static const unsigned int inputCount = PT::inputCount;
+  static const unsigned int outputCount = PT::outputCount;
 
 private:
   void _ThreadTick();
@@ -49,16 +49,16 @@ private:
 
 //=============================================================================
 
-template< typename Process >
-R11Component< Process >::~R11Component()
+template< typename PT >
+R11Component< PT >::~R11Component()
 {
   SetThreadCount( 0 );
 }
 
 //=============================================================================
 
-template< typename Process >
-void R11Component< Process >::SetThreadCount( char threadCount )
+template< typename PT >
+void R11Component< PT >::SetThreadCount( char threadCount )
 {
   while( threadCount_ != 0 && currentThread_ != 0 )
   {
@@ -76,7 +76,7 @@ void R11Component< Process >::SetThreadCount( char threadCount )
 
   for( unsigned char i = 0; i < threads_.size(); ++i )
   {
-    threads_[i].Initialise( std::bind( &Process::Tick, &_process, i ) );
+    threads_[i].Initialise( std::bind( &PT::Tick, &_process, i ) );
   }
 
   _process.SetBufferCount( threadCount );
@@ -86,8 +86,8 @@ void R11Component< Process >::SetThreadCount( char threadCount )
 
 //-----------------------------------------------------------------------------
 
-template< typename Process >
-void R11Component< Process >::Tick()
+template< typename PT >
+void R11Component< PT >::Tick()
 {
   if( threadCount_ > 0 )
   {
@@ -101,9 +101,9 @@ void R11Component< Process >::Tick()
 
 //-----------------------------------------------------------------------------
 
-template< typename Process >
+template< typename PT >
 template< int input, typename T >
-void R11Component< Process >::SetInput( const T& value )
+void R11Component< PT >::SetInput( const T& value )
 {
   if( threadCount_ > 0 )
   {
@@ -118,9 +118,9 @@ void R11Component< Process >::SetInput( const T& value )
 
 //-----------------------------------------------------------------------------
 
-template< typename Process >
+template< typename PT >
 template< int output >
-auto R11Component< Process >::GetInput() -> decltype( _process.template GetInput< output >() )
+auto R11Component< PT >::GetInput() -> decltype( _process.template GetInput< output >() )
 {
   if( threadCount_ > 0 )
   {
@@ -135,9 +135,9 @@ auto R11Component< Process >::GetInput() -> decltype( _process.template GetInput
 
 //-----------------------------------------------------------------------------
 
-template< typename Process >
+template< typename PT >
 template< int output >
-auto R11Component< Process >::GetOutput() -> decltype( _process.template GetOutput< output >() )
+auto R11Component< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
 {
   if( threadCount_ > 0 )
   {
@@ -152,8 +152,8 @@ auto R11Component< Process >::GetOutput() -> decltype( _process.template GetOutp
 
 //=============================================================================
 
-template< typename Process >
-void R11Component< Process >::_ThreadTick()
+template< typename PT >
+void R11Component< PT >::_ThreadTick()
 {
   threads_[currentThread_].Sync();
   threads_[currentThread_].Resume();
