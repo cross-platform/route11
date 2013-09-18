@@ -5,6 +5,7 @@
 
 #include "R11ComponentThread.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <vector>
 
@@ -41,9 +42,6 @@ public:
 public:
   static const uint_fast16_t inputCount = PT::inputCount;
   static const uint_fast16_t outputCount = PT::outputCount;
-
-private:
-  void _ThreadTick();
 
 private:
   std::vector< R11ComponentThread > threads_;
@@ -84,10 +82,14 @@ void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
     return;
   }
 
-  while( threadCount_ != 0 && currentThread_ != 0 )
-  {
-    _ThreadTick();
-  }
+  for_each( begin( threads_ ) + currentThread_, end( threads_ ),
+            [ this ]( R11ComponentThread& thread )
+            {
+              thread.Sync();
+              thread.Resume();
+            } );
+
+  currentThread_ = 0;
 
   for( auto& thread : threads_ )
   {
@@ -115,7 +117,9 @@ void R11Component< PT >::Tick()
 {
   if( threadCount_ > 0 )
   {
-    _ThreadTick();
+    threads_[ currentThread_ ].Sync();
+    threads_[ currentThread_ ].Resume();
+    ++currentThread_ %= threadCount_;
   }
   else
   {
@@ -172,16 +176,6 @@ auto R11Component< PT >::GetOutput() -> decltype( _process.template GetOutput< o
   {
     return _process.template GetOutput< output >();
   }
-}
-
-//=============================================================================
-
-template< typename PT >
-void R11Component< PT >::_ThreadTick()
-{
-  threads_[ currentThread_ ].Sync();
-  threads_[ currentThread_ ].Resume();
-  ++currentThread_ %= threadCount_;
 }
 
 }

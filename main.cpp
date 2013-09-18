@@ -34,12 +34,12 @@
 // move semantics
 // delegating constr
 // enum classes
+// STL algorithms
 
 // NOT USED 7
 // ==========
 // user-defined literals
 // std::array
-// STL algorithms
 // raw string literals
 // char types
 // unrestricted unions
