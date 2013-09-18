@@ -159,13 +159,13 @@ auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::g
 template< typename Policy >
 void R11Process< Policy >::_WaitForRelease( int_fast8_t bufferNo )
 {
-  _releaseMutexes[bufferNo].lock();
-  if( !_gotReleases[bufferNo] )
+  _releaseMutexes[ bufferNo ].lock();
+  if( !_gotReleases[ bufferNo ] )
   {
-    _releaseCondts[bufferNo].wait( _releaseMutexes[bufferNo] ); // wait for resume
+    _releaseCondts[ bufferNo ].wait( _releaseMutexes[ bufferNo ] ); // wait for resume
   }
-  _gotReleases[bufferNo] = false; // reset the release flag
-  _releaseMutexes[bufferNo].unlock();
+  _gotReleases[ bufferNo ] = false; // reset the release flag
+  _releaseMutexes[ bufferNo ].unlock();
 }
 
 //=============================================================================
@@ -173,15 +173,12 @@ void R11Process< Policy >::_WaitForRelease( int_fast8_t bufferNo )
 template< typename Policy >
 void R11Process< Policy >::_ReleaseBuffer( int_fast8_t bufferNo )
 {
-  if( _bufferCount > 0 )
-  {
-    ++bufferNo %= _bufferCount;
-  }
+  ++bufferNo %= _bufferCount;
 
-  _releaseMutexes[bufferNo].lock();
-  _gotReleases[bufferNo] = true;
-  _releaseCondts[bufferNo].notify_all();
-  _releaseMutexes[bufferNo].unlock();
+  _releaseMutexes[ bufferNo ].lock();
+  _gotReleases[ bufferNo ] = true;
+  _releaseCondts[ bufferNo ].notify_all();
+  _releaseMutexes[ bufferNo ].unlock();
 }
 
 }

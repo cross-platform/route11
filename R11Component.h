@@ -71,7 +71,7 @@ void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
     _ThreadTick();
   }
 
-  for( auto& thread : threads_ )
+  for( auto& thread : threads_)
   {
     thread.Sync();
   }
@@ -80,9 +80,9 @@ void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
 
   threads_.resize( threadCount );
 
-  for( uint_fast8_t i = 0; i < threads_.size(); ++i )
+  for( auto it = begin( threads_ ); it != end( threads_ ); ++it )
   {
-    threads_[i].Initialise( std::bind( &PT::Tick, &_process, i ) );
+    it->Initialise( std::bind( &PT::Tick, &_process, std::distance( begin( threads_ ), it ) ) );
   }
 
   _process.SetBufferCount( threadCount );

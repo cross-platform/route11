@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-// USED 23
+// USED 25
 // =======
 // in-class initializers
 // override
@@ -30,6 +30,8 @@
 // integer types
 // safe pointers
 // expicit conv
+// nonmember begin / end
+// move semantics
 
 // NOT USED 9
 // ===========
