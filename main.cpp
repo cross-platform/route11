@@ -51,7 +51,7 @@ using Route11::R11DspComponent;
 
 int main()
 {
-  BoolsPrinter x;
+  BoolsPrinter x( Route11::R11ThreadConfig::ThreadPerCore );
   R11DspComponent< BoolsPrinter > y( true );
 
   getchar();

@@ -48,6 +48,8 @@ public:
 class BoolsPrinter : public _BoolsPrinter::T
 {
 public:
+  using _BoolsPrinter::T::T;
+
   enum Inputs
   {
     inInv1,

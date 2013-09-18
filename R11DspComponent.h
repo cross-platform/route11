@@ -14,11 +14,11 @@
 namespace Route11
 {
 
-template< typename CT >
+template< typename PT >
 class R11DspComponent final : public DspComponent
 {
 private:
-  CT _component;
+  PT _process;
 
 public:
   explicit R11DspComponent( int_fast8_t threadCount = 0, bool startRunning = false );
@@ -31,10 +31,10 @@ public:
   void SetInput( const T& value );
 
   template< uint_fast16_t input >
-  auto GetInput() -> decltype( _component.template GetInput< input >() );
+  auto GetInput() -> decltype( _process.template GetInput< input >() );
 
   template< uint_fast16_t output >
-  auto GetOutput() -> decltype( _component.template GetOutput< output >() );
+  auto GetOutput() -> decltype( _process.template GetOutput< output >() );
 
 protected:
   virtual void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override;
@@ -45,27 +45,27 @@ private:
   struct _StaticLoop
   {
     void AddIos( std::function< void() > addMethod );
-    void FillInputs( CT& component, DspSignalBus& inputs );
-    void FillOutputs( CT& component, DspSignalBus& outputs );
+    void FillInputs( PT& component, DspSignalBus& inputs );
+    void FillOutputs( PT& component, DspSignalBus& outputs );
   };
 
   template< uint_fast16_t N >
   struct _StaticLoop< N, N >
   {
     void AddIos( std::function< void() > addMethod ) {}
-    void FillInputs( CT& component, DspSignalBus& inputs ) {}
-    void FillOutputs( CT& component, DspSignalBus& inputs ) {}
+    void FillInputs( PT& component, DspSignalBus& inputs ) {}
+    void FillOutputs( PT& component, DspSignalBus& inputs ) {}
   };
 
 private:
-  _StaticLoop< 0, CT::inputCount > _inputsLooper;
-  _StaticLoop< 0, CT::outputCount > _outputsLooper;
+  _StaticLoop< 0, PT::inputCount > _inputsLooper;
+  _StaticLoop< 0, PT::outputCount > _outputsLooper;
 };
 
 //=============================================================================
 
-template< typename CT >
-R11DspComponent< CT >::R11DspComponent( int_fast8_t threadCount, bool startRunning )
+template< typename PT >
+R11DspComponent< PT >::R11DspComponent( int_fast8_t threadCount, bool startRunning )
 {
   _inputsLooper.AddIos( [ this ]() { AddInput_(); } );
   _outputsLooper.AddIos( [ this ]() { AddOutput_(); } );
@@ -80,22 +80,22 @@ R11DspComponent< CT >::R11DspComponent( int_fast8_t threadCount, bool startRunni
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
-R11DspComponent< CT >::R11DspComponent( bool startRunning )
+template< typename PT >
+R11DspComponent< PT >::R11DspComponent( bool startRunning )
 : R11DspComponent( 0, startRunning ){}
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
-R11DspComponent< CT >::R11DspComponent( R11ThreadConfig threadConfig, bool startRunning )
+template< typename PT >
+R11DspComponent< PT >::R11DspComponent( R11ThreadConfig threadConfig, bool startRunning )
 : R11DspComponent( threadConfig == R11ThreadConfig::ThreadPerCore ?
                    std::thread::hardware_concurrency() : 0,
                    startRunning ) {}
 
 //=============================================================================
 
-template< typename CT >
-void R11DspComponent< CT >::SetThreadCount( int_fast8_t threadCount )
+template< typename PT >
+void R11DspComponent< PT >::SetThreadCount( int_fast8_t threadCount )
 {
   if( threadCount < 0 )
   {
@@ -103,29 +103,29 @@ void R11DspComponent< CT >::SetThreadCount( int_fast8_t threadCount )
   }
 
   PauseAutoTick();
-  _component.SetThreadCount( threadCount );
+  _process.SetThreadCount( threadCount );
   ResumeAutoTick();
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
+template< typename PT >
 template< uint_fast16_t input, typename T >
-void R11DspComponent< CT >::SetInput( const T& value )
+void R11DspComponent< PT >::SetInput( const T& value )
 {
   PauseAutoTick();
-  _component.template SetInput< input >( value );
+  _process.template SetInput< input >( value );
   ResumeAutoTick();
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
+template< typename PT >
 template< uint_fast16_t input >
-auto R11DspComponent< CT >::GetInput() -> decltype( _component.template GetInput< input >() )
+auto R11DspComponent< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
 {
   PauseAutoTick();
-  auto returnValue = _component.template GetInput< input >();
+  auto returnValue = _process.template GetInput< input >();
   ResumeAutoTick();
 
   return returnValue;
@@ -133,12 +133,12 @@ auto R11DspComponent< CT >::GetInput() -> decltype( _component.template GetInput
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
+template< typename PT >
 template< uint_fast16_t output >
-auto R11DspComponent< CT >::GetOutput() -> decltype( _component.template GetOutput< output >() )
+auto R11DspComponent< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
 {
   PauseAutoTick();
-  auto returnValue = _component.template GetOutput< output >();
+  auto returnValue = _process.template GetOutput< output >();
   ResumeAutoTick();
 
   return returnValue;
@@ -146,21 +146,21 @@ auto R11DspComponent< CT >::GetOutput() -> decltype( _component.template GetOutp
 
 //=============================================================================
 
-template< typename CT >
-void R11DspComponent< CT >::Process_( DspSignalBus& inputs, DspSignalBus& outputs )
+template< typename PT >
+void R11DspComponent< PT >::Process_( DspSignalBus& inputs, DspSignalBus& outputs )
 {
-  _inputsLooper.FillInputs( _component, inputs );
+  _inputsLooper.FillInputs( _process, inputs );
 
-  _component.Tick();
+  _process.Tick();
 
-  _outputsLooper.FillOutputs( _component, outputs );
+  _outputsLooper.FillOutputs( _process, outputs );
 }
 
 //=============================================================================
 
-template< typename CT >
+template< typename PT >
 template< uint_fast16_t First, uint_fast16_t Size >
-void R11DspComponent< CT >::_StaticLoop< First, Size >::AddIos( std::function< void() > addMethod )
+void R11DspComponent< PT >::_StaticLoop< First, Size >::AddIos( std::function< void() > addMethod )
 {
   addMethod();
 
@@ -169,9 +169,9 @@ void R11DspComponent< CT >::_StaticLoop< First, Size >::AddIos( std::function< v
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
+template< typename PT >
 template< uint_fast16_t First, uint_fast16_t Size >
-void R11DspComponent< CT >::_StaticLoop< First, Size >::FillInputs( CT& component, DspSignalBus& inputs )
+void R11DspComponent< PT >::_StaticLoop< First, Size >::FillInputs( PT& component, DspSignalBus& inputs )
 {
   auto input = component.template GetInput< First >();
 
@@ -183,9 +183,9 @@ void R11DspComponent< CT >::_StaticLoop< First, Size >::FillInputs( CT& componen
 
 //-----------------------------------------------------------------------------
 
-template< typename CT >
+template< typename PT >
 template< uint_fast16_t First, uint_fast16_t Size >
-void R11DspComponent< CT >::_StaticLoop< First, Size >::FillOutputs( CT& component, DspSignalBus& outputs )
+void R11DspComponent< PT >::_StaticLoop< First, Size >::FillOutputs( PT& component, DspSignalBus& outputs )
 {
   outputs.SetValue( First, component.template GetOutput< First >() );
 
