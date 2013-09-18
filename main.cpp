@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-// USED 27
+// USED 28
 // =======
 // in-class initializers
 // override
@@ -36,7 +36,7 @@
 // enum classes
 // STL algorithms
 
-// NOT USED 7
+// NOT USED 6
 // ==========
 // user-defined literals
 // std::array
