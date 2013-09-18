@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "DSPatch.h"
-#include "R11ComponentThread.h"
+#include "R11AsyncProcessThread.h"
 
 #include <cstdint>
 #include <functional>

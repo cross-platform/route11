@@ -9,7 +9,7 @@
 using Route11::R11Process;
 using Route11::R11ProcessLoop;
 using Route11::R11ProcessPair;
-using Route11::R11Component;
+using Route11::R11AsyncProcess;
 
 //-----------------------------------------------------------------------------
 
@@ -40,7 +40,7 @@ private:
   3, 1 >;
 
 public:
-  using T = R11Component< BoolsPrinter >;
+  using T = R11AsyncProcess< BoolsPrinter >;
 };
 
 //-----------------------------------------------------------------------------

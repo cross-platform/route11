@@ -3,7 +3,7 @@
 
 //=============================================================================
 
-#include "R11Component.h"
+#include "R11AsyncProcess.h"
 #include "R11Process.h"
 #include "R11ProcessLoop.h"
 #include "R11ProcessPair.h"

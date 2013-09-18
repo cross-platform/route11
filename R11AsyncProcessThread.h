@@ -1,5 +1,5 @@
-#ifndef R11COMPONENTTHREAD_H
-#define R11COMPONENTTHREAD_H
+#ifndef R11ASYNCPROCESSTHREAD_H
+#define R11ASYNCPROCESSTHREAD_H
 
 //-----------------------------------------------------------------------------
 
@@ -20,13 +20,13 @@ enum class R11ThreadConfig
 
 //=============================================================================
 
-class R11ComponentThread
+class R11AsyncProcessThread
 {
 public:
-  R11ComponentThread() = default;
-  R11ComponentThread( const R11ComponentThread& other );
+  R11AsyncProcessThread() = default;
+  R11AsyncProcessThread( const R11AsyncProcessThread& other );
 
-  ~R11ComponentThread();
+  ~R11AsyncProcessThread();
 
   void Initialise( std::function< void( int_fast8_t ) > tickMethod );
 
@@ -49,30 +49,30 @@ private:
   std::mutex _resumeMutex;
   std::condition_variable_any _resumeCondt;
   std::condition_variable_any _syncCondt;
-  std::thread _thread = std::thread( &R11ComponentThread::_ThreadTick, this );
+  std::thread _thread = std::thread( &R11AsyncProcessThread::_ThreadTick, this );
 };
 
 //=============================================================================
 
-R11ComponentThread::R11ComponentThread( const R11ComponentThread& other ) {}
+R11AsyncProcessThread::R11AsyncProcessThread( const R11AsyncProcessThread& other ) {}
 
 //-----------------------------------------------------------------------------
 
-R11ComponentThread::~R11ComponentThread()
+R11AsyncProcessThread::~R11AsyncProcessThread()
 {
   _Stop();
 }
 
 //=============================================================================
 
-void R11ComponentThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
+void R11AsyncProcessThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
 {
   _tickMethod = tickMethod;
 }
 
 //-----------------------------------------------------------------------------
 
-void R11ComponentThread::Sync()
+void R11AsyncProcessThread::Sync()
 {
   _resumeMutex.lock();
 
@@ -86,7 +86,7 @@ void R11ComponentThread::Sync()
 
 //-----------------------------------------------------------------------------
 
-void R11ComponentThread::Resume()
+void R11AsyncProcessThread::Resume()
 {
   _resumeMutex.lock();
 
@@ -100,7 +100,7 @@ void R11ComponentThread::Resume()
 
 //=============================================================================
 
-void R11ComponentThread::_Stop()
+void R11AsyncProcessThread::_Stop()
 {
   _stop = true;
 
@@ -116,7 +116,7 @@ void R11ComponentThread::_Stop()
 
 //-----------------------------------------------------------------------------
 
-void R11ComponentThread::_ThreadTick()
+void R11AsyncProcessThread::_ThreadTick()
 {
   while( !_stop )
   {
@@ -148,4 +148,4 @@ void R11ComponentThread::_ThreadTick()
 
 //=============================================================================
 
-#endif // R11COMPONENTTHREAD_H
+#endif // R11ASYNCPROCESSTHREAD_H

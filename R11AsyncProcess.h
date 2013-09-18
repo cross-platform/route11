@@ -1,9 +1,9 @@
-#ifndef R11COMPONENT_H
-#define R11COMPONENT_H
+#ifndef R11ASYNCPROCESS_H
+#define R11ASYNCPROCESS_H
 
 //-----------------------------------------------------------------------------
 
-#include "R11ComponentThread.h"
+#include "R11AsyncProcessThread.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -15,16 +15,16 @@ namespace Route11
 {
 
 template< typename PT >
-class R11Component
+class R11AsyncProcess
 {
 private:
   PT _process;
 
 public:
-  explicit R11Component( int_fast8_t threadCount = 0 );
-  R11Component( R11ThreadConfig threadConfig );
+  explicit R11AsyncProcess( int_fast8_t threadCount = 0 );
+  R11AsyncProcess( R11ThreadConfig threadConfig );
 
-  ~R11Component();
+  ~R11AsyncProcess();
 
   void SetThreadCount( int_fast8_t threadCount );
 
@@ -44,7 +44,7 @@ public:
   static const uint_fast16_t outputCount = PT::outputCount;
 
 private:
-  std::vector< R11ComponentThread > threads_;
+  std::vector< R11AsyncProcessThread > threads_;
   int_fast8_t threadCount_ = 0;
   int_fast8_t currentThread_ = 0;
 };
@@ -52,7 +52,7 @@ private:
 //=============================================================================
 
 template< typename PT >
-R11Component< PT >::R11Component( int_fast8_t threadCount )
+R11AsyncProcess< PT >::R11AsyncProcess( int_fast8_t threadCount )
 {
   SetThreadCount( threadCount );
 }
@@ -60,14 +60,14 @@ R11Component< PT >::R11Component( int_fast8_t threadCount )
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-R11Component< PT >::R11Component( R11ThreadConfig threadConfig )
-: R11Component( threadConfig == R11ThreadConfig::ThreadPerCore ?
+R11AsyncProcess< PT >::R11AsyncProcess( R11ThreadConfig threadConfig )
+: R11AsyncProcess( threadConfig == R11ThreadConfig::ThreadPerCore ?
                 std::thread::hardware_concurrency() : 0 ) {}
 
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-R11Component< PT >::~R11Component()
+R11AsyncProcess< PT >::~R11AsyncProcess()
 {
   SetThreadCount( 0 );
 }
@@ -75,7 +75,7 @@ R11Component< PT >::~R11Component()
 //=============================================================================
 
 template< typename PT >
-void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
+void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
 {
   if( threadCount < 0 || threadCount == threadCount_ )
   {
@@ -83,7 +83,7 @@ void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
   }
 
   for_each( begin( threads_ ) + currentThread_, end( threads_ ),
-            [ this ]( R11ComponentThread& thread )
+            [ this ]( R11AsyncProcessThread& thread )
             {
               thread.Sync();
               thread.Resume();
@@ -113,7 +113,7 @@ void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-void R11Component< PT >::Tick()
+void R11AsyncProcess< PT >::Tick()
 {
   if( threadCount_ > 0 )
   {
@@ -131,7 +131,7 @@ void R11Component< PT >::Tick()
 
 template< typename PT >
 template< uint_fast16_t input, typename T >
-void R11Component< PT >::SetInput( const T& value )
+void R11AsyncProcess< PT >::SetInput( const T& value )
 {
   if( threadCount_ > 0 )
   {
@@ -148,7 +148,7 @@ void R11Component< PT >::SetInput( const T& value )
 
 template< typename PT >
 template< uint_fast16_t input >
-auto R11Component< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
+auto R11AsyncProcess< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
 {
   if( threadCount_ > 0 )
   {
@@ -165,7 +165,7 @@ auto R11Component< PT >::GetInput() -> decltype( _process.template GetInput< inp
 
 template< typename PT >
 template< uint_fast16_t output >
-auto R11Component< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
+auto R11AsyncProcess< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
 {
   if( threadCount_ > 0 )
   {
@@ -182,4 +182,4 @@ auto R11Component< PT >::GetOutput() -> decltype( _process.template GetOutput< o
 
 //=============================================================================
 
-#endif // R11COMPONENT_H
+#endif // R11ASYNCPROCESS_H
