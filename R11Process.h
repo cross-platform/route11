@@ -5,6 +5,7 @@
 
 #include <condition_variable>
 #include <cstdint>
+#include <deque>
 #include <memory>
 #include <thread>
 #include <tuple>
@@ -51,8 +52,7 @@ private:
   std::vector< decltype( R11Process::input_ ) > _inputBuffers;
   std::vector< decltype( R11Process::output_ ) > _outputBuffers;
 
-  // vector of bool is fine here as it is only written to by one thread at a time
-  std::vector< bool > _gotReleases;
+  std::deque< bool > _gotReleases;
   std::unique_ptr< std::mutex[] > _releaseMutexes = nullptr;
   std::unique_ptr< std::condition_variable_any[] > _releaseCondts = nullptr;
 };
@@ -69,19 +69,23 @@ void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
 
   _bufferCount = 0;
 
-  _gotReleases.resize( 0 );
+  _inputBuffers.resize( bufferCount );
+  _outputBuffers.resize( bufferCount );
+
   _gotReleases.resize( bufferCount );
 
   if( bufferCount > 0 )
   {
+    for( auto& gotRelease : _gotReleases )
+    {
+      gotRelease = false;
+    }
+
     _gotReleases[0] = true;
   }
 
   _releaseMutexes.reset( new std::mutex[ bufferCount ] );
   _releaseCondts.reset( new std::condition_variable_any[ bufferCount ] );
-
-  _inputBuffers.resize( bufferCount );
-  _outputBuffers.resize( bufferCount );
 
   _bufferCount = bufferCount;
 }
