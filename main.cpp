@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-// USED 25
+// USED 27
 // =======
 // in-class initializers
 // override
@@ -32,11 +32,11 @@
 // expicit conv
 // nonmember begin / end
 // move semantics
-
-// NOT USED 9
-// ===========
 // delegating constr
 // enum classes
+
+// NOT USED 7
+// ==========
 // user-defined literals
 // std::array
 // STL algorithms
@@ -52,8 +52,9 @@ using Route11::R11DspComponent;
 int main()
 {
   BoolsPrinter x;
-  R11DspComponent< BoolsPrinter > y;
+  R11DspComponent< BoolsPrinter > y( true );
 
+  getchar();
   x.SetThreadCount( 10 );
   y.SetThreadCount( 10 );
 

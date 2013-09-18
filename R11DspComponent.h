@@ -4,6 +4,7 @@
 //-----------------------------------------------------------------------------
 
 #include "DSPatch.h"
+#include "R11ComponentThread.h"
 
 #include <cstdint>
 #include <functional>
@@ -20,7 +21,9 @@ private:
   CT _component;
 
 public:
-  explicit R11DspComponent( int_fast8_t threadCount = 0 );
+  explicit R11DspComponent( int_fast8_t threadCount = 0, bool startRunning = false );
+  explicit R11DspComponent( bool startRunning );
+  R11DspComponent( ThreadConfig threadConfig, bool startRunning = false );
 
   void SetThreadCount( int_fast8_t threadCount );
 
@@ -62,13 +65,32 @@ private:
 //=============================================================================
 
 template< typename CT >
-R11DspComponent< CT >::R11DspComponent( int_fast8_t threadCount )
+R11DspComponent< CT >::R11DspComponent( int_fast8_t threadCount, bool startRunning )
 {
   _inputsLooper.AddIos( [ this ]() { AddInput_(); } );
   _outputsLooper.AddIos( [ this ]() { AddOutput_(); } );
 
   SetThreadCount( threadCount );
+
+  if( startRunning )
+  {
+    StartAutoTick();
+  }
 }
+
+//-----------------------------------------------------------------------------
+
+template< typename CT >
+R11DspComponent< CT >::R11DspComponent( bool startRunning )
+: R11DspComponent( 0, startRunning ){}
+
+//-----------------------------------------------------------------------------
+
+template< typename CT >
+R11DspComponent< CT >::R11DspComponent( ThreadConfig threadConfig, bool startRunning )
+: R11DspComponent( threadConfig == ThreadConfig::ThreadPerCore ?
+                   std::thread::hardware_concurrency() : 0,
+                   startRunning ) {}
 
 //=============================================================================
 

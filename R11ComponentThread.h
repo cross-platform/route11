@@ -12,6 +12,12 @@
 namespace Route11
 {
 
+enum class ThreadConfig
+{
+  SingleThreaded,
+  ThreadPerCore
+};
+
 class R11ComponentThread
 {
 public:
