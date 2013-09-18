@@ -52,9 +52,9 @@ private:
   template< uint_fast16_t N >
   struct _StaticLoop< N, N >
   {
-    void AddIos( std::function< void() > addMethod ) {}
-    void FillInputs( PT& component, DspSignalBus& inputs ) {}
-    void FillOutputs( PT& component, DspSignalBus& inputs ) {}
+    void AddIos( std::function< void() > addMethod ) { unused( addMethod ); }
+    void FillInputs( PT& component, DspSignalBus& inputs ) { unused( component, inputs ); }
+    void FillOutputs( PT& component, DspSignalBus& inputs ) { unused( component, inputs ); }
   };
 
 private:

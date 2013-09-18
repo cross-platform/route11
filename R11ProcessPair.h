@@ -130,7 +130,7 @@ private:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t oddIndex >
-  void _TransferSignals( int_fast8_t threadNo = -1 ) {}
+  void _TransferSignals( int_fast8_t threadNo = -1 ) { unused( threadNo ); }
 
   //-----------------------------------------------------------------------------
 };

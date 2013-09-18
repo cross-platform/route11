@@ -24,7 +24,7 @@ class R11AsyncProcessThread
 {
 public:
   R11AsyncProcessThread() = default;
-  R11AsyncProcessThread( const R11AsyncProcessThread& other );
+  R11AsyncProcessThread( const R11AsyncProcessThread& other ) { unused( other); }
 
   ~R11AsyncProcessThread();
 
@@ -53,10 +53,6 @@ private:
 };
 
 //=============================================================================
-
-R11AsyncProcessThread::R11AsyncProcessThread( const R11AsyncProcessThread& other ) {}
-
-//-----------------------------------------------------------------------------
 
 R11AsyncProcessThread::~R11AsyncProcessThread()
 {
