@@ -20,8 +20,8 @@ private:
   PT _process;
 
 public:
-  explicit R11Component( int_fast8_t threadCount );
-  R11Component( ThreadConfig startConfig = ThreadConfig::SingleThreaded );
+  explicit R11Component( int_fast8_t threadCount = 0 );
+  R11Component( R11ThreadConfig threadConfig );
 
   ~R11Component();
 
@@ -62,8 +62,8 @@ R11Component< PT >::R11Component( int_fast8_t threadCount )
 //-----------------------------------------------------------------------------
 
 template< typename PT >
-R11Component< PT >::R11Component( ThreadConfig threadConfig )
-: R11Component( threadConfig == ThreadConfig::ThreadPerCore ?
+R11Component< PT >::R11Component( R11ThreadConfig threadConfig )
+: R11Component( threadConfig == R11ThreadConfig::ThreadPerCore ?
                 std::thread::hardware_concurrency() : 0 ) {}
 
 //-----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void R11Component< PT >::SetThreadCount( int_fast8_t threadCount )
     _ThreadTick();
   }
 
-  for( auto& thread : threads_)
+  for( auto& thread : threads_ )
   {
     thread.Sync();
   }

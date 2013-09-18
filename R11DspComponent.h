@@ -23,7 +23,7 @@ private:
 public:
   explicit R11DspComponent( int_fast8_t threadCount = 0, bool startRunning = false );
   explicit R11DspComponent( bool startRunning );
-  R11DspComponent( ThreadConfig threadConfig, bool startRunning = false );
+  R11DspComponent( R11ThreadConfig threadConfig, bool startRunning = false );
 
   void SetThreadCount( int_fast8_t threadCount );
 
@@ -87,8 +87,8 @@ R11DspComponent< CT >::R11DspComponent( bool startRunning )
 //-----------------------------------------------------------------------------
 
 template< typename CT >
-R11DspComponent< CT >::R11DspComponent( ThreadConfig threadConfig, bool startRunning )
-: R11DspComponent( threadConfig == ThreadConfig::ThreadPerCore ?
+R11DspComponent< CT >::R11DspComponent( R11ThreadConfig threadConfig, bool startRunning )
+: R11DspComponent( threadConfig == R11ThreadConfig::ThreadPerCore ?
                    std::thread::hardware_concurrency() : 0,
                    startRunning ) {}
 

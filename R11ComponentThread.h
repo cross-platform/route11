@@ -12,11 +12,13 @@
 namespace Route11
 {
 
-enum class ThreadConfig
+enum class R11ThreadConfig
 {
   SingleThreaded,
   ThreadPerCore
 };
+
+//=============================================================================
 
 class R11ComponentThread
 {
