@@ -54,21 +54,21 @@ private:
 
 //=============================================================================
 
-R11AsyncProcessThread::~R11AsyncProcessThread()
+inline R11AsyncProcessThread::~R11AsyncProcessThread()
 {
   _Stop();
 }
 
 //=============================================================================
 
-void R11AsyncProcessThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
+inline void R11AsyncProcessThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
 {
   _tickMethod = tickMethod;
 }
 
 //-----------------------------------------------------------------------------
 
-void R11AsyncProcessThread::Sync()
+inline void R11AsyncProcessThread::Sync()
 {
   _resumeMutex.lock();
 
@@ -82,7 +82,7 @@ void R11AsyncProcessThread::Sync()
 
 //-----------------------------------------------------------------------------
 
-void R11AsyncProcessThread::Resume()
+inline void R11AsyncProcessThread::Resume()
 {
   _resumeMutex.lock();
 
@@ -96,7 +96,7 @@ void R11AsyncProcessThread::Resume()
 
 //=============================================================================
 
-void R11AsyncProcessThread::_Stop()
+inline void R11AsyncProcessThread::_Stop()
 {
   _stop = true;
 
@@ -112,7 +112,7 @@ void R11AsyncProcessThread::_Stop()
 
 //-----------------------------------------------------------------------------
 
-void R11AsyncProcessThread::_ThreadTick()
+inline void R11AsyncProcessThread::_ThreadTick()
 {
   while( !_stop )
   {
