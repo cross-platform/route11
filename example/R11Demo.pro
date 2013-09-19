@@ -15,14 +15,14 @@ HEADERS += \
     R11WaveStreamer.h \
     R11Crossfader.h \
     R11AudioDevice.h \
-    R11MicroWaveMixer.h \
     ../include/Route11.h \
     ../src/R11ProcessPair.h \
     ../src/R11ProcessLoop.h \
     ../src/R11Process.h \
     ../src/R11DspComponent.h \
     ../src/R11AsyncProcessThread.h \
-    ../src/R11AsyncProcess.h
+    ../src/R11AsyncProcess.h \
+    R11MicWaveMixer.h
 
 DEFINES +=__LINUX_ALSA__
 LIBS += -lasound

@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class enables processes to be multithreaded
+// this class enables a Route11 process to be multithreaded
 
 template< typename PT >
 class R11AsyncProcess

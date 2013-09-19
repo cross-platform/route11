@@ -45,7 +45,7 @@ protected:
 
   void Process_()
   {
-    // get buffer size and crossfade input value
+    // get buffer size and crossfade level
     auto bufferSize = std::get< 0 >( input_ ).size();
     auto crossfade = std::get< 2 >( input_ );
 
@@ -75,7 +75,7 @@ protected:
   //-----------------------------------------------------------------------------
 
 protected:
-  // 2 input audio streams, 1 input crossfade value
+  // 2 input audio streams, 1 input crossfade level
   std::tuple< std::vector< float >, std::vector< float >, float > input_;
 
   // 1 output audio stream

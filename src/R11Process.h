@@ -76,7 +76,7 @@ public:
 
 private:
   void _WaitForRelease( int_fast8_t bufferNo );
-  void _ReleaseBuffer( int_fast8_t bufferNo );
+  void _ReleaseNextBuffer( int_fast8_t bufferNo );
 
 private:
   bool _ticked = false;
@@ -106,6 +106,7 @@ void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
   _inputBuffers.resize( bufferCount );
   _outputBuffers.resize( bufferCount );
 
+  // resize _gotReleases
   _gotReleases.resize( bufferCount );
 
   if( bufferCount > 0 )
@@ -147,7 +148,7 @@ void R11Process< Policy >::Tick( int_fast8_t bufferNo )
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _outputBuffers[ bufferNo ] = Policy::output_;
-    _ReleaseBuffer( bufferNo );
+    _ReleaseNextBuffer( bufferNo );
   }
 }
 
@@ -205,28 +206,28 @@ auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::g
 //=============================================================================
 
 template< typename Policy >
-void R11Process< Policy >::_WaitForRelease( int_fast8_t bufferNo )
+void R11Process< Policy >::_WaitForRelease( int_fast8_t currentBufferNo )
 {
-  _releaseMutexes[ bufferNo ].lock();
-  if( !_gotReleases[ bufferNo ] )
+  _releaseMutexes[ currentBufferNo ].lock();
+  if( !_gotReleases[ currentBufferNo ] )
   {
-    _releaseCondts[ bufferNo ].wait( _releaseMutexes[ bufferNo ] ); // wait for resume
+    _releaseCondts[ currentBufferNo ].wait( _releaseMutexes[ currentBufferNo ] ); // wait for resume
   }
-  _gotReleases[ bufferNo ] = false; // reset the release flag
-  _releaseMutexes[ bufferNo ].unlock();
+  _gotReleases[ currentBufferNo ] = false; // reset the release flag
+  _releaseMutexes[ currentBufferNo ].unlock();
 }
 
 //=============================================================================
 
 template< typename Policy >
-void R11Process< Policy >::_ReleaseBuffer( int_fast8_t bufferNo )
+void R11Process< Policy >::_ReleaseNextBuffer( int_fast8_t currentBufferNo )
 {
-  ++bufferNo %= _bufferCount;
+  ++currentBufferNo %= _bufferCount;
 
-  _releaseMutexes[ bufferNo ].lock();
-  _gotReleases[ bufferNo ] = true;
-  _releaseCondts[ bufferNo ].notify_all();
-  _releaseMutexes[ bufferNo ].unlock();
+  _releaseMutexes[ currentBufferNo ].lock();
+  _gotReleases[ currentBufferNo ] = true;
+  _releaseCondts[ currentBufferNo ].notify_all();
+  _releaseMutexes[ currentBufferNo ].unlock();
 }
 
 }

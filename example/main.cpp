@@ -29,20 +29,24 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#include "R11MicroWaveMixer.h"
+#include "R11MicWaveMixer.h"
 
 //=============================================================================
 
+// this application instantiates a Route11 "Mic/Wave Mixer", sets the input
+// wave file and crossfade levels, then ticks the system 1500 times before
+// exiting.
+
 int main()
 {
-  // create a mic / wave mixer system
-  R11MicroWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
+  // create a "Mic/Wave Mixer" process system
+  R11MicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
   // set mixer input values
-  mixer.SetInput< R11MicroWaveMixer::File >( "../Tchaikovski-Swan-Lake-Scene.wav" );
-  mixer.SetInput< R11MicroWaveMixer::Play >( true );
-  mixer.SetInput< R11MicroWaveMixer::Fade1 >( 0.75 );
-  mixer.SetInput< R11MicroWaveMixer::Fade2 >( 0.75 );
+  mixer.SetInput< R11MicWaveMixer::File >( "../Tchaikovski-Swan-Lake-Scene.wav" );
+  mixer.SetInput< R11MicWaveMixer::Play >( true );
+  mixer.SetInput< R11MicWaveMixer::Fade1 >( 0.75 );
+  mixer.SetInput< R11MicWaveMixer::Fade2 >( 0.75 );
 
   // tick mixer system
   for( int i = 0; i < 1500; ++i )

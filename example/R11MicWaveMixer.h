@@ -29,8 +29,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#ifndef R11MICROWAVEMIXER_H
-#define R11MICROWAVEMIXER_H
+#ifndef R11MICWAVEMIXER_H
+#define R11MICWAVEMIXER_H
 
 //-----------------------------------------------------------------------------
 
@@ -47,23 +47,24 @@ using Route11::R11ProcessPair;
 
 //=============================================================================
 
-// this class is used to route a mic / wave mixer system
+// this class is used to route a "Mic/Wave Mixer" process system
+// (refer to the "doc" folder for detailed diagrams of each routing step)
 
-class _R11MicroWaveMixer
+class _R11MicWaveMixer
 {
 private:
-  // define aliases for processes required
+  // step 1 : define aliases for processes required
   using Ws = R11Process< R11WaveStreamer >;
   using Cf = R11Process< R11Crossfader >;
   using Ad = R11Process< R11AudioDevice >;
 
-  // pair 2 crossfaders
+  // step 2 : pair 2 crossfaders
   typedef R11ProcessPair
   < 3, 1, Cf,
     3, 1, Cf
   > CfCf;
 
-  // pair and connect the crossfader pair to an audio device
+  // step 3 : pair and connect the crossfader pair to an audio device
   typedef R11ProcessPair
   < 6, 2, CfCf,
     2, 2, Ad,
@@ -71,14 +72,14 @@ private:
     1, 1
   > CfCfAd;
 
-  // feed audio device outputs back into the crossfader pair
+  // step 4 : feed audio device outputs back into the crossfader pair
   typedef R11ProcessLoop
   < 8, 4, CfCfAd,
     2, 0,
     3, 3
   > _CfCfAd_;
 
-  // pair and connect a wave streamer to the crossfader inputs
+  // step 5 : pair and connect a wave streamer to the crossfader inputs
   typedef R11ProcessPair
   < 2, 2, Ws,
     8, 4, _CfCfAd_,
@@ -94,13 +95,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-// this class is used to instantiate a mic / wave mixer system
+// this class is used to instantiate a "Mic/Wave Mixer" process system
 
-class R11MicroWaveMixer : public _R11MicroWaveMixer::T
+class R11MicWaveMixer : public _R11MicWaveMixer::T
 {
 public:
   // inherit base constructors
-  using _R11MicroWaveMixer::T::T;
+  using _R11MicWaveMixer::T::T;
 
   // define user-friendly input enumeration for end user
   enum Inputs
@@ -114,4 +115,4 @@ public:
 
 //=============================================================================
 
-#endif // R11MICROWAVEMIXER_H
+#endif // R11MICWAVEMIXER_H
