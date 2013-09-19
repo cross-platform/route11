@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -41,6 +41,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
+// this class defines a feedback loop from a process' outputs to its own inputs
+
 template< uint_fast16_t PinputCount, uint_fast16_t PoutputCount, typename PT,
           uint_fast16_t fromOutput, uint_fast16_t... toInput >
 
@@ -57,6 +59,7 @@ public:
 
   void SetBufferCount( int_fast8_t bufferCount )
   {
+    // set interal process' buffer count
     _process.SetBufferCount( bufferCount );
   }
 
@@ -64,8 +67,10 @@ public:
 
   void Tick( int_fast8_t threadNo = -1 )
   {
+    // 1. tick process
     _process.Tick( threadNo );
 
+    // 2. transfer feedback signals
     _TransferSignals< fromOutput, toInput... >( threadNo );
   }
 
@@ -106,6 +111,8 @@ private:
   void _TransferSignals( int_fast8_t threadNo = -1 )
   {
     _TransferSignals< output, input >( threadNo );
+
+    // transfer signals recursively until all signals are satisfied
     _TransferSignals< nextOutput, nextInput... >( threadNo );
   }
 
@@ -114,6 +121,7 @@ private:
   template< uint_fast16_t output, uint_fast16_t input >
   void _TransferSignals( int_fast8_t threadNo = -1 )
   {
+    // transfer last signal
     _process.template SetInput< input >( _process.template GetOutput< output >( threadNo ), threadNo );
   }
 

@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -40,6 +40,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Route11
 {
+
+// this class defines either a parallel or serially connected pair of processes
 
 template< uint_fast16_t P1inputCount, uint_fast16_t P1outputCount, typename P1T,
           uint_fast16_t P2inputCount, uint_fast16_t P2outputCount, typename P2T,
@@ -95,6 +97,7 @@ public:
 
   void SetBufferCount( int_fast8_t bufferCount )
   {
+    // set both internal processes' buffer counts
     _processes.first.SetBufferCount( bufferCount );
     _processes.second.SetBufferCount( bufferCount );
   }
@@ -103,10 +106,13 @@ public:
 
   void Tick( int_fast8_t threadNo = -1 )
   {
+    // 1. tick first process
     _processes.first.Tick( threadNo );
 
+    // 2. transfer signals from first process to second process
     _TransferSignals< P1fromOutput, P2ToInput... >( threadNo );
 
+    // 3. tick second process
     _processes.second.Tick( threadNo );
   }
 
@@ -147,6 +153,8 @@ private:
   void _TransferSignals( int_fast8_t threadNo = -1 )
   {
     _TransferSignals< output, input >( threadNo );
+
+    // transfer signals recursively until all signals are satisfied
     _TransferSignals< nextOutput, nextInput... >( threadNo );
   }
 
@@ -155,6 +163,7 @@ private:
   template< uint_fast16_t output, uint_fast16_t input >
   void _TransferSignals( int_fast8_t threadNo = -1 )
   {
+    // transfer last signal
     _processes.second.template SetInput< input >( _processes.first.template GetOutput< output >( threadNo ), threadNo );
   }
 

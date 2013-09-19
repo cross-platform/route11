@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -44,6 +44,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Route11
 {
+
+// this class enables processes to be multithreaded
 
 template< typename PT >
 class R11AsyncProcess
@@ -113,6 +115,7 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
     return;
   }
 
+  // manually tick until 0
   for_each( begin( threads_ ) + currentThread_, end( threads_ ),
             [ this ]( R11AsyncProcessThread& thread )
             {
@@ -122,6 +125,7 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
 
   currentThread_ = 0;
 
+  // sync with all threads
   for( auto& thread : threads_ )
   {
     thread.Sync();
@@ -131,11 +135,13 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
 
   threads_.resize( threadCount );
 
+  // initialize all threads with appropriate callback method
   for( uint_fast8_t i = 0; i < threads_.size(); ++i )
   {
     threads_[ i ].Initialise( std::bind( &PT::Tick, &_process, i ) );
   }
 
+  // update the process buffer count to match new thread count
   _process.SetBufferCount( threadCount );
 
   threadCount_ = threadCount;
@@ -146,12 +152,14 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
 template< typename PT >
 void R11AsyncProcess< PT >::Tick()
 {
+  // if multithreaded, tick the appropriate thread
   if( threadCount_ > 0 )
   {
     threads_[ currentThread_ ].Sync();
     threads_[ currentThread_ ].Resume();
     ++currentThread_ %= threadCount_;
   }
+  // else tick within current thread
   else
   {
     _process.Tick();
@@ -164,6 +172,7 @@ template< typename PT >
 template< uint_fast16_t input, typename T >
 void R11AsyncProcess< PT >::SetInput( const T& value )
 {
+  // if multithreaded, sync with and set input for all threads
   if( threadCount_ > 0 )
   {
     for( uint_fast8_t i = 0; i < threads_.size(); ++i )
@@ -172,6 +181,7 @@ void R11AsyncProcess< PT >::SetInput( const T& value )
       _process.template SetInput< input >( value, i );
     }
   }
+  // else set input normally
   else
   {
     _process.template SetInput< input >( value );
@@ -184,11 +194,13 @@ template< typename PT >
 template< uint_fast16_t input >
 auto R11AsyncProcess< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
 {
+  // if multithreaded, sync with current thread then get it's current input
   if( threadCount_ > 0 )
   {
     threads_[ currentThread_ ].Sync();
     return _process.template GetInput< input >( currentThread_ );
   }
+  // else get input normally
   else
   {
     return _process.template GetInput< input >();
@@ -201,11 +213,13 @@ template< typename PT >
 template< uint_fast16_t output >
 auto R11AsyncProcess< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
 {
+  // if multithreaded, sync with current thread then get it's current output
   if( threadCount_ > 0 )
   {
     threads_[ currentThread_ ].Sync();
     return _process.template GetOutput< output >( currentThread_ );
   }
+  // else get output normally
   else
   {
     return _process.template GetOutput< output >();

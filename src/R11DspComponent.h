@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -45,6 +45,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
+// this class allows Route11 processes to be used as components within DSPatch
+
 template< typename PT >
 class R11DspComponent final : public DspComponent
 {
@@ -71,7 +73,7 @@ protected:
   virtual void Process_( DspSignalBus& inputs, DspSignalBus& outputs ) override;
 
 private:
-  // Fancy little trick to get around function template specialization within a class
+  // fancy little trick to get around function template specialization within a class
   template< uint_fast16_t First, uint_fast16_t Size >
   struct _StaticLoop
   {
@@ -98,6 +100,7 @@ private:
 template< typename PT >
 R11DspComponent< PT >::R11DspComponent( int_fast8_t threadCount, bool startRunning )
 {
+  // add IO according to Route11 process IO
   _inputsLooper.AddIos( [ this ]() { AddInput_(); } );
   _outputsLooper.AddIos( [ this ]() { AddOutput_(); } );
 
@@ -180,10 +183,13 @@ auto R11DspComponent< PT >::GetOutput() -> decltype( _process.template GetOutput
 template< typename PT >
 void R11DspComponent< PT >::Process_( DspSignalBus& inputs, DspSignalBus& outputs )
 {
+  // fill _process inputs with DspSignalBus inputs
   _inputsLooper.FillInputs( _process, inputs );
 
+  // tick _process
   _process.Tick();
 
+  // fill DspSignalBus outputs with _process outputs
   _outputsLooper.FillOutputs( _process, outputs );
 }
 
@@ -195,6 +201,7 @@ void R11DspComponent< PT >::_StaticLoop< First, Size >::AddIos( std::function< v
 {
   addMethod();
 
+  // add IOs recursively
   _StaticLoop< First + 1, Size >().AddIos( addMethod );
 }
 
@@ -209,6 +216,7 @@ void R11DspComponent< PT >::_StaticLoop< First, Size >::FillInputs( PT& componen
   inputs.GetValue( First, input );
   component.template SetInput< First >( input );
 
+  // fill inputs recursively
   _StaticLoop< First + 1, Size >().FillInputs( component, inputs );
 }
 
@@ -220,6 +228,7 @@ void R11DspComponent< PT >::_StaticLoop< First, Size >::FillOutputs( PT& compone
 {
   outputs.SetValue( First, component.template GetOutput< First >() );
 
+  // fill outputs recursively
   _StaticLoop< First + 1, Size >().FillOutputs( component, outputs );
 }
 

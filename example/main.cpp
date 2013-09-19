@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -35,13 +35,16 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 int main()
 {
+  // create a mic / wave mixer system
   R11MicroWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
+  // set mixer input values
   mixer.SetInput< R11MicroWaveMixer::File >( "../Tchaikovski-Swan-Lake-Scene.wav" );
   mixer.SetInput< R11MicroWaveMixer::Play >( true );
   mixer.SetInput< R11MicroWaveMixer::Fade1 >( 0.75 );
   mixer.SetInput< R11MicroWaveMixer::Fade2 >( 0.75 );
 
+  // tick mixer system
   for( int i = 0; i < 1500; ++i )
   {
     mixer.Tick();

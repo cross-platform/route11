@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -46,6 +46,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Route11
 {
+
+// this is a policy-based host class for a discrete Route11 process
 
 template< typename Policy >
 class R11Process : public Policy
@@ -100,6 +102,7 @@ void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
 
   _bufferCount = 0;
 
+  // resize internal buffers
   _inputBuffers.resize( bufferCount );
   _outputBuffers.resize( bufferCount );
 
@@ -107,17 +110,21 @@ void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
 
   if( bufferCount > 0 )
   {
+    // set all gotReleases to false
     for( auto& gotRelease : _gotReleases )
     {
       gotRelease = false;
     }
 
+    // set first _gotRelease to true to "kick start" the system
     _gotReleases[0] = true;
   }
 
+  // reset the mutex and condition variable pointers to new array sizes
   _releaseMutexes.reset( new std::mutex[ bufferCount ] );
   _releaseCondts.reset( new std::condition_variable_any[ bufferCount ] );
 
+  // update _bufferCount
   _bufferCount = bufferCount;
 }
 
@@ -126,14 +133,17 @@ void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
 template< typename Policy >
 void R11Process< Policy >::Tick( int_fast8_t bufferNo )
 {
+  // if multithreaded, sync with previous thread before continuing
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _WaitForRelease( bufferNo );
     Policy::input_ = _inputBuffers[ bufferNo ];
   }
 
+  // call policy's Process_ method
   Policy::Process_();
 
+  // if multithreaded, notify the next waiting thread
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _outputBuffers[ bufferNo ] = Policy::output_;
@@ -147,6 +157,7 @@ template< typename Policy >
 template< uint_fast16_t input, typename T >
 void R11Process< Policy >::SetInput( const T& value, int_fast8_t bufferNo )
 {
+  // if multithreaded, set the requested buffer's input
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     std::get< input >( _inputBuffers[ bufferNo ] ) = value;
@@ -163,6 +174,7 @@ template< typename Policy >
 template< uint_fast16_t input >
 auto R11Process< Policy >::GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( Policy::input_ ) )
 {
+  // if multithreaded, get the requested buffer's input
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     return std::get< input >( _inputBuffers[ bufferNo ] );
@@ -179,6 +191,7 @@ template< typename Policy >
 template< uint_fast16_t output >
 auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( Policy::output_ ) )
 {
+  // if multithreaded, get the requested buffer's output
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     return std::get< output >( _outputBuffers[ bufferNo ] );

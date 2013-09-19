@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -42,6 +42,8 @@ struct RtAudioMembers;
 
 //=============================================================================
 
+// this process policy implements a stereo audio streaming IO device
+
 class R11AudioDevice
 {
 public:
@@ -67,7 +69,10 @@ protected:
   void Process_();
 
 protected:
+  // 2 input audio streams
   std::tuple< std::vector< float >, std::vector< float > > input_;
+
+  // 2 output audio streams
   std::tuple< std::vector< float >, std::vector< float > > output_;
 
 private:

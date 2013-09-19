@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -39,6 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //=============================================================================
 
+// this process policy implements a stereo wave file audio streamer
+
 class R11WaveStreamer
 {
 public:
@@ -57,7 +59,10 @@ protected:
   void Process_();
 
 protected:
+  // 1 input file name, 1 input play trigger
   std::tuple< std::string, bool > input_;
+
+  // 2 output audio streams
   std::tuple< std::vector< float >, std::vector< float > > output_;
 
 private:

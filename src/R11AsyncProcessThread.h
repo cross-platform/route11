@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -45,11 +45,13 @@ namespace Route11
 
 enum class R11ThreadConfig
 {
-  SingleThreaded,
-  ThreadPerCore
+  SingleThreaded, // use main application thread to do all processing
+  ThreadPerCore   // use one thread per processor core for processing
 };
 
 //=============================================================================
+
+// this class is used by R11AsyncProcess to control each process thread
 
 class R11AsyncProcessThread
 {
@@ -94,6 +96,7 @@ inline R11AsyncProcessThread::~R11AsyncProcessThread()
 
 inline void R11AsyncProcessThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
 {
+  // store callback method for use in _ThreadTick
   _tickMethod = tickMethod;
 }
 
@@ -129,8 +132,10 @@ inline void R11AsyncProcessThread::Resume()
 
 inline void R11AsyncProcessThread::_Stop()
 {
+  // set _stop flag (notify _ThreadTick to exit)
   _stop = true;
 
+  // wait until _ThreadTick exits
   while( !_stopped )
   {
     _syncCondt.notify_all();
@@ -138,6 +143,7 @@ inline void R11AsyncProcessThread::_Stop()
     std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
   }
 
+  // join with thread
   _thread.join();
 }
 
@@ -168,6 +174,7 @@ inline void R11AsyncProcessThread::_ThreadTick()
     }
   }
 
+  // set _stopped flag (notify _Stop that the thread has exited)
   _stopped = true;
 }
 

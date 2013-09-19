@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -47,18 +47,23 @@ using Route11::R11ProcessPair;
 
 //=============================================================================
 
+// this class is used to route a mic / wave mixer system
+
 class _R11MicroWaveMixer
 {
 private:
+  // define aliases for processes required
   using Ws = R11Process< R11WaveStreamer >;
   using Cf = R11Process< R11Crossfader >;
   using Ad = R11Process< R11AudioDevice >;
 
+  // pair 2 crossfaders
   typedef R11ProcessPair
   < 3, 1, Cf,
     3, 1, Cf
   > CfCf;
 
+  // pair and connect the crossfader pair to an audio device
   typedef R11ProcessPair
   < 6, 2, CfCf,
     2, 2, Ad,
@@ -66,12 +71,14 @@ private:
     1, 1
   > CfCfAd;
 
+  // feed audio device outputs back into the crossfader pair
   typedef R11ProcessLoop
   < 8, 4, CfCfAd,
     2, 0,
     3, 3
   > _CfCfAd_;
 
+  // pair and connect a wave streamer to the crossfader inputs
   typedef R11ProcessPair
   < 2, 2, Ws,
     8, 4, _CfCfAd_,
@@ -80,16 +87,22 @@ private:
   > Ws_CfCfAd_;
 
 public:
+  // define public alias "T" as system type
+  // (async allows system to be multithreaded)
   using T = R11AsyncProcess< Ws_CfCfAd_ >;
 };
 
 //-----------------------------------------------------------------------------
 
+// this class is used to instantiate a mic / wave mixer system
+
 class R11MicroWaveMixer : public _R11MicroWaveMixer::T
 {
 public:
+  // inherit base constructors
   using _R11MicroWaveMixer::T::T;
 
+  // define user-friendly input enumeration for end user
   enum Inputs
   {
     File = 0,

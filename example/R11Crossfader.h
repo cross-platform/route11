@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -34,6 +34,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //=============================================================================
 
+// this process policy implements a crossfader between 2 input audio streams
+
 class R11Crossfader
 {
 protected:
@@ -43,9 +45,11 @@ protected:
 
   void Process_()
   {
+    // get buffer size and crossfade input value
     auto bufferSize = std::get< 0 >( input_ ).size();
     auto crossfade = std::get< 2 >( input_ );
 
+    // don't continue if the 2 input stream lengths don't match
     if( bufferSize != std::get< 1 >( input_ ).size() ||
         crossfade < 0 || crossfade > 1 )
     {
@@ -53,12 +57,14 @@ protected:
       return;
     }
 
+    // update _bufferSize if necessary
     if( _bufferSize != bufferSize )
     {
       std::get< 0 >( output_ ).resize( bufferSize );
       _bufferSize = bufferSize;
     }
 
+    // set output stream as the crossfaded result of the 2 input streams
     for( uint_fast32_t i = 0; i < bufferSize; ++i )
     {
       std::get< 0 >( output_ )[ i ] = ( std::get< 0 >( input_ )[ i ] * ( 1 - crossfade ) ) +
@@ -69,7 +75,10 @@ protected:
   //-----------------------------------------------------------------------------
 
 protected:
+  // 2 input audio streams, 1 input crossfade value
   std::tuple< std::vector< float >, std::vector< float >, float > input_;
+
+  // 1 output audio stream
   std::tuple< std::vector< float > > output_;
 
 private:

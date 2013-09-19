@@ -1,10 +1,10 @@
 /************************************************************************
-Route 11 - C++11 Flow-Based Template Metaprogramming Library
+Route11 - C++ Flow-Based Metaprogramming Library
 Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route 11.
+This file is part of Route11.
 
-The BSD 2-Clause License:
+Simplified BSD Licence:
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
@@ -191,7 +191,7 @@ uint_fast32_t R11AudioDevice::GetSampleRate()
 void R11AudioDevice::Process_()
 {
   // Wait until the sound card is ready for the next set of buffers
-  // ==============================================================
+
   _syncMutex.lock();
   if( !_gotSyncReady )              // if haven't already got the release
     _syncCondt.wait( _syncMutex );  // wait for sync
@@ -199,17 +199,17 @@ void R11AudioDevice::Process_()
   _syncMutex.unlock();
 
   // Retrieve incoming component buffers for the sound card to output
-  // ================================================================
+
   _outputChannels[0] = std::get< 0 >( input_ );
   _outputChannels[1] = std::get< 1 >( input_ );
 
   // Retrieve incoming sound card buffers for the component to output
-  // ================================================================
+
   std::get< 0 >( output_ ) = _inputChannels[0];
   std::get< 1 >( output_ ) = _inputChannels[1];
 
   // Inform the sound card that buffers are now ready
-  // ================================================
+
   _buffersMutex.lock();
   _gotWaitReady = true; // set release flag
   _waitCondt.notify_all(); // release sync
