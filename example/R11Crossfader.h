@@ -8,6 +8,8 @@ class R11Crossfader
 protected:
   ~R11Crossfader() = default;
 
+  //-----------------------------------------------------------------------------
+
   void Process_()
   {
     auto bufferSize = std::get< 0 >( input_ ).size();
@@ -32,6 +34,8 @@ protected:
                                       ( std::get< 1 >( input_ )[ i ] * crossfade );
     }
   }
+
+  //-----------------------------------------------------------------------------
 
 protected:
   std::tuple< std::vector< float >, std::vector< float >, float > input_;
