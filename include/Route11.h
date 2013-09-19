@@ -5,10 +5,10 @@
 
 template< typename... T > void unused( T&&... ) {}
 
-#include "R11AsyncProcess.h"
-#include "R11Process.h"
-#include "R11ProcessLoop.h"
-#include "R11ProcessPair.h"
+#include "../src/R11AsyncProcess.h"
+#include "../src/R11Process.h"
+#include "../src/R11ProcessLoop.h"
+#include "../src/R11ProcessPair.h"
 
 //-----------------------------------------------------------------------------
 

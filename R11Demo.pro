@@ -17,7 +17,7 @@ HEADERS += \
     example/rtaudio/RtAudio.h \
     example/R11MicroWaveMixer.h
 
-INCLUDEPATH += "src"
+INCLUDEPATH += "include"
 
 DEFINES +=__LINUX_ALSA__
 LIBS += -lasound

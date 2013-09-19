@@ -6,7 +6,7 @@ CONFIG += c++11
 
 HEADERS += \
     src/R11DspComponent.h \
-    src/Route11.h \
+    include/Route11.h \
     src/R11Process.h \
     src/R11ProcessPair.h \
     src/R11ProcessLoop.h \
