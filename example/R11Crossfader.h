@@ -28,7 +28,7 @@ protected:
       _bufferSize = bufferSize;
     }
 
-    for( uint_fast32_t i = 0; i < bufferSize; i++ )
+    for( uint_fast32_t i = 0; i < bufferSize; ++i )
     {
       std::get< 0 >( output_ )[ i ] = ( std::get< 0 >( input_ )[ i ] * ( 1 - crossfade ) ) +
                                       ( std::get< 1 >( input_ )[ i ] * crossfade );

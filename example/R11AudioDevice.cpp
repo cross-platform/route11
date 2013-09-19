@@ -30,7 +30,7 @@ R11AudioDevice::R11AudioDevice()
   _deviceCount = _rtAudio->audioStream.getDeviceCount();
   _rtAudio->deviceList.resize( _deviceCount );
 
-  for( int_fast16_t i = 0; i < _deviceCount; i++ )
+  for( int_fast16_t i = 0; i < _deviceCount; ++i )
   {
     _rtAudio->deviceList[i] = _rtAudio->audioStream.getDeviceInfo( i );
   }
@@ -129,7 +129,7 @@ void R11AudioDevice::SetBufferSize( uint_fast32_t bufferSize )
 
   _bufferSize = bufferSize;
 
-  for( uint_fast16_t i = 0; i < _inputChannels.size(); i++ )
+  for( uint_fast16_t i = 0; i < _inputChannels.size(); ++i )
   {
     _inputChannels[i].resize( _bufferSize );
   }
@@ -212,7 +212,7 @@ void R11AudioDevice::_StopStream()
 {
   _streamStop = true;
 
-  for( uint_fast16_t i = 0; i < 250; i++ )
+  for( uint_fast16_t i = 0; i < 250; ++i )
   {
     _waitCondt.notify_all();
 
@@ -301,11 +301,11 @@ int R11AudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
 
     if( outputBuffer != NULL )
     {
-      for( uint_fast32_t i = 0; i < _outputChannels.size(); i++ )
+      for( uint_fast32_t i = 0; i < _outputChannels.size(); ++i )
       {
         if( _rtAudio->deviceList[_currentDevice].outputChannels >= ( i + 1 ) )
         {
-          for( uint_fast32_t j = 0; j < _outputChannels[i].size(); j++ )
+          for( uint_fast32_t j = 0; j < _outputChannels[i].size(); ++j )
           {
             *floatOutput++ = _outputChannels[i][j];
           }
@@ -315,11 +315,11 @@ int R11AudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
 
     if( inputBuffer != NULL )
     {
-      for( uint_fast32_t i = 0; i < _inputChannels.size(); i++ )
+      for( uint_fast32_t i = 0; i < _inputChannels.size(); ++i )
       {
         if( _rtAudio->deviceList[_currentDevice].inputChannels >= ( i + 1 ) )
         {
-          for( uint_fast32_t j = 0; j < _inputChannels[i].size(); j++ )
+          for( uint_fast32_t j = 0; j < _inputChannels[i].size(); ++j )
           {
             _inputChannels[i][j] = *floatInput++;
           }

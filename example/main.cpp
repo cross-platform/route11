@@ -11,7 +11,7 @@ int main()
   mixer.SetInput< R11MicroWaveMixer::Fade1 >( 0.75 );
   mixer.SetInput< R11MicroWaveMixer::Fade2 >( 0.75 );
 
-  for( int i = 0; i < 1500; i++ )
+  for( int i = 0; i < 1500; ++i )
   {
     mixer.Tick();
   }
