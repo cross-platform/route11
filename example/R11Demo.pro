@@ -5,16 +5,16 @@ CONFIG -= qt
 CONFIG += c++11
 
 SOURCES += \
-    main.cpp \
+    rtaudio/RtAudio.cpp \
     R11WaveStreamer.cpp \
     R11AudioDevice.cpp \
-    rtaudio/RtAudio.cpp
+    main.cpp
 
 HEADERS += \
+    rtaudio/RtAudio.h \
     R11WaveStreamer.h \
     R11Crossfader.h \
     R11AudioDevice.h \
-    rtaudio/RtAudio.h \
     R11MicroWaveMixer.h \
     ../include/Route11.h \
     ../src/R11ProcessPair.h \
