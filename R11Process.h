@@ -101,7 +101,7 @@ void R11Process< Policy >::Tick( int_fast8_t bufferNo )
     Policy::input_ = _inputBuffers[ bufferNo ];
   }
 
-  Policy::Process();
+  Policy::Process_();
 
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
