@@ -100,9 +100,9 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
 
   threads_.resize( threadCount );
 
-  for( auto it = begin( threads_ ); it != end( threads_ ); ++it )
+  for( uint_fast8_t i = 0; i < threads_.size(); ++i )
   {
-    it->Initialise( std::bind( &PT::Tick, &_process, std::distance( begin( threads_ ), it ) ) );
+    threads_[ i ].Initialise( std::bind( &PT::Tick, &_process, i ) );
   }
 
   _process.SetBufferCount( threadCount );
@@ -135,8 +135,11 @@ void R11AsyncProcess< PT >::SetInput( const T& value )
 {
   if( threadCount_ > 0 )
   {
-    threads_[ currentThread_ ].Sync();
-    _process.template SetInput< input >( value, currentThread_ );
+    for( uint_fast8_t i = 0; i < threads_.size(); ++i )
+    {
+      threads_[ i ].Sync();
+      _process.template SetInput< input >( value, i );
+    }
   }
   else
   {
