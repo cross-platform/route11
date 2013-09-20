@@ -47,7 +47,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this is a Process Policy host class used to form discrete Route11 Processes
+// this is a Process Policy host class used to form Route11 Process Primitives
 
 template< typename PP >
 class R11Process : public PP
