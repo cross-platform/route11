@@ -29,7 +29,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#include "R11AudioDevice.h"
+#include "R11PpAudioDevice.h"
 
 #include "../include/Route11.h"
 #include "rtaudio/RtAudio.h"
@@ -52,7 +52,7 @@ struct RtAudioMembers
 
 //=============================================================================
 
-R11AudioDevice::R11AudioDevice()
+R11PpAudioDevice::R11PpAudioDevice()
 : _rtAudio( new RtAudioMembers() )
 {
   _outputChannels.resize( 2 );
@@ -74,7 +74,7 @@ R11AudioDevice::R11AudioDevice()
 
 //-----------------------------------------------------------------------------
 
-R11AudioDevice::~R11AudioDevice()
+R11PpAudioDevice::~R11PpAudioDevice()
 {
   _StopStream();
 
@@ -83,7 +83,7 @@ R11AudioDevice::~R11AudioDevice()
 
 //-----------------------------------------------------------------------------
 
-bool R11AudioDevice::SetDevice( int_fast16_t deviceIndex )
+bool R11PpAudioDevice::SetDevice( int_fast16_t deviceIndex )
 {
   if( deviceIndex >= 0 && deviceIndex < ( _deviceCount ) )
   {
@@ -107,7 +107,7 @@ bool R11AudioDevice::SetDevice( int_fast16_t deviceIndex )
 
 //-----------------------------------------------------------------------------
 
-std::string R11AudioDevice::GetDeviceName( int_fast16_t deviceIndex )
+std::string R11PpAudioDevice::GetDeviceName( int_fast16_t deviceIndex )
 {
   if( deviceIndex >= 0 && deviceIndex < ( _deviceCount ) )
   {
@@ -119,42 +119,42 @@ std::string R11AudioDevice::GetDeviceName( int_fast16_t deviceIndex )
 
 //-----------------------------------------------------------------------------
 
-uint_fast16_t R11AudioDevice::GetDeviceInputCount( int_fast16_t deviceIndex )
+uint_fast16_t R11PpAudioDevice::GetDeviceInputCount( int_fast16_t deviceIndex )
 {
   return _rtAudio->deviceList[deviceIndex].inputChannels;
 }
 
 //-----------------------------------------------------------------------------
 
-uint_fast16_t R11AudioDevice::GetDeviceOutputCount( int_fast16_t deviceIndex )
+uint_fast16_t R11PpAudioDevice::GetDeviceOutputCount( int_fast16_t deviceIndex )
 {
   return _rtAudio->deviceList[deviceIndex].outputChannels;
 }
 
 //-----------------------------------------------------------------------------
 
-uint_fast16_t R11AudioDevice::GetCurrentDevice()
+uint_fast16_t R11PpAudioDevice::GetCurrentDevice()
 {
   return _currentDevice;
 }
 
 //-----------------------------------------------------------------------------
 
-uint_fast16_t R11AudioDevice::GetDeviceCount()
+uint_fast16_t R11PpAudioDevice::GetDeviceCount()
 {
   return _deviceCount;
 }
 
 //-----------------------------------------------------------------------------
 
-bool R11AudioDevice::IsStreaming()
+bool R11PpAudioDevice::IsStreaming()
 {
   return _isStreaming;
 }
 
 //-----------------------------------------------------------------------------
 
-void R11AudioDevice::SetBufferSize( uint_fast32_t bufferSize )
+void R11PpAudioDevice::SetBufferSize( uint_fast32_t bufferSize )
 {
   _StopStream();
 
@@ -170,7 +170,7 @@ void R11AudioDevice::SetBufferSize( uint_fast32_t bufferSize )
 
 //-----------------------------------------------------------------------------
 
-void R11AudioDevice::SetSampleRate( uint_fast32_t sampleRate )
+void R11PpAudioDevice::SetSampleRate( uint_fast32_t sampleRate )
 {
   _StopStream();
 
@@ -181,14 +181,14 @@ void R11AudioDevice::SetSampleRate( uint_fast32_t sampleRate )
 
 //-----------------------------------------------------------------------------
 
-uint_fast32_t R11AudioDevice::GetSampleRate()
+uint_fast32_t R11PpAudioDevice::GetSampleRate()
 {
   return _sampleRate;
 }
 
 //=============================================================================
 
-void R11AudioDevice::Process_()
+void R11PpAudioDevice::Process_()
 {
   // Wait until the sound card is ready for the next set of buffers
 
@@ -218,7 +218,7 @@ void R11AudioDevice::Process_()
 
 //=============================================================================
 
-void R11AudioDevice::_WaitForBuffer()
+void R11PpAudioDevice::_WaitForBuffer()
 {
   _buffersMutex.lock();
   if( !_gotWaitReady )										//if haven't already got the release
@@ -229,7 +229,7 @@ void R11AudioDevice::_WaitForBuffer()
 
 //-----------------------------------------------------------------------------
 
-void R11AudioDevice::_SyncBuffer()
+void R11PpAudioDevice::_SyncBuffer()
 {
   _syncMutex.lock();
   _gotSyncReady = true;								//set release flag
@@ -239,7 +239,7 @@ void R11AudioDevice::_SyncBuffer()
 
 //-----------------------------------------------------------------------------
 
-void R11AudioDevice::_StopStream()
+void R11PpAudioDevice::_StopStream()
 {
   _streamStop = true;
 
@@ -272,7 +272,7 @@ void R11AudioDevice::_StopStream()
 
 //-----------------------------------------------------------------------------
 
-void R11AudioDevice::_StartStream()
+void R11PpAudioDevice::_StartStream()
 {
   RtAudio::StreamParameters* inputParams = NULL;
   RtAudio::StreamParameters* outputParams = NULL;
@@ -308,7 +308,7 @@ void R11AudioDevice::_StartStream()
 
 //-----------------------------------------------------------------------------
 
-int R11AudioDevice::_StaticCallback( void* outputBuffer,
+int R11PpAudioDevice::_StaticCallback( void* outputBuffer,
                                      void* inputBuffer,
                                      unsigned int nBufferFrames,
                                      double streamTime,
@@ -316,12 +316,12 @@ int R11AudioDevice::_StaticCallback( void* outputBuffer,
                                      void* userData )
 {
   unused( nBufferFrames, streamTime, status );
-  return ( ( R11AudioDevice* ) userData )->_DynamicCallback( inputBuffer, outputBuffer );
+  return ( ( R11PpAudioDevice* ) userData )->_DynamicCallback( inputBuffer, outputBuffer );
 }
 
 //-----------------------------------------------------------------------------
 
-int R11AudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
+int R11PpAudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
 {
   _WaitForBuffer();
 

@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class allows a Route11 process to be used as a component within DSPatch
+// this class allows a Route11 Process to be used as a component within DSPatch
 
 template< typename PT >
 class R11DspComponent final : public DspComponent
@@ -100,7 +100,7 @@ private:
 template< typename PT >
 R11DspComponent< PT >::R11DspComponent( int_fast8_t threadCount, bool startRunning )
 {
-  // add IO according to Route11 process IO
+  // add IO according to Route11 Process IO
   _inputsLooper.AddIos( [ this ]() { AddInput_(); } );
   _outputsLooper.AddIos( [ this ]() { AddOutput_(); } );
 

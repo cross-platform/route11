@@ -29,91 +29,80 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#ifndef R11AUDIODEVICE_H
-#define R11AUDIODEVICE_H
+#ifndef R11PPWAVESTREAMER_H
+#define R11PPWAVESTREAMER_H
 
 //-----------------------------------------------------------------------------
 
-#include <string>
-#include <vector>
 #include <condition_variable>
-
-struct RtAudioMembers;
+#include <vector>
 
 //=============================================================================
 
-// this process policy implements a stereo audio streaming IO device
+// this Process Policy implements a stereo wave file audio streamer
 
-class R11AudioDevice
+class R11PpWaveStreamer
 {
 public:
-  R11AudioDevice();
+  R11PpWaveStreamer();
 
-  bool SetDevice( int_fast16_t deviceIndex );
+  bool LoadFile( std::string& filePath );
+  void Play();
+  void Pause();
+  void Stop();
 
-  std::string GetDeviceName( int_fast16_t deviceIndex );
-  uint_fast16_t GetDeviceInputCount( int_fast16_t deviceIndex );
-  uint_fast16_t GetDeviceOutputCount( int_fast16_t deviceIndex );
-  uint_fast16_t GetCurrentDevice();
-  uint_fast16_t GetDeviceCount();
-
-  bool IsStreaming();
-
-  void SetBufferSize( uint_fast32_t bufferSize );
-  void SetSampleRate( uint_fast32_t sampleRate );
-  uint_fast32_t GetSampleRate();
+  bool IsPlaying();
 
 protected:
-  ~R11AudioDevice();
+  ~R11PpWaveStreamer();
 
   void Process_();
 
 protected:
-  // 2 input audio streams
-  std::tuple< std::vector< float >, std::vector< float > > input_;
+  // 1 input file name, 1 input play trigger
+  std::tuple< std::string, bool > input_;
 
   // 2 output audio streams
   std::tuple< std::vector< float >, std::vector< float > > output_;
 
 private:
-  void _WaitForBuffer();
-  void _SyncBuffer();
+  struct WaveFormat
+  {
+    void Clear()
+    {
+      format = 0;
+      channelCount = 0;
+      sampleRate = 0;
+      byteRate = 0;
+      frameSize = 0;
+      bitDepth = 0;
+      extraDataSize = 0;
+    }
 
-  void _StopStream();
-  void _StartStream();
-
-  static int _StaticCallback( void* outputBuffer,
-                              void* inputBuffer,
-                              unsigned int nBufferFrames,
-                              double streamTime,
-                              unsigned int status,
-                              void* userData );
-
-  int _DynamicCallback( void* inputBuffer, void* outputBuffer );
+    uint_fast16_t format;        // Integer identifier of the format
+    uint_fast16_t channelCount;  // Number of audio channels
+    uint_fast32_t sampleRate;    // Audio sample rate
+    uint_fast32_t byteRate;      // Bytes per second (possibly approximate)
+    uint_fast16_t frameSize;     // Size in bytes of a sample block (all channels)
+    uint_fast16_t bitDepth;      // Size in bits of a single per-channel sample
+    uint_fast16_t extraDataSize; // Bytes of extra data appended to this struct
+  };
 
 private:
+  std::string _filePath = "";
+  bool _isPlaying = false;
   uint_fast32_t _bufferSize = 128;
-  uint_fast32_t _sampleRate = 11025;
-  int_fast16_t _deviceCount = 0;
+  uint_fast32_t _sampleIndex = 0;
+  float _shortToFloatCoeff = 1.0f / 32767.0f;
 
-  bool _gotWaitReady = false;
-  bool _gotSyncReady = true;
-  bool _streamStop = false;
-  bool _isStreaming = false;
+  WaveFormat _waveFormat;
+  std::vector< int16_t > _waveData;
+  std::mutex _busyMutex;
 
-  std::vector< std::vector< float > > _outputChannels;
-  std::vector< std::vector< float > > _inputChannels;
-
-  RtAudioMembers* _rtAudio;
-
-  std::mutex _buffersMutex;
-  std::mutex _syncMutex;
-  std::condition_variable_any _waitCondt;
-  std::condition_variable_any _syncCondt;
-
-  uint_fast16_t _currentDevice = 0;
+  std::vector< float > _leftChannel;
+  std::vector< float > _rightChannel;
 };
 
 //=============================================================================
 
-#endif // R11AUDIODEVICE_H
+#endif // R11PPWAVESTREAMER_H

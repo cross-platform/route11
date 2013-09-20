@@ -47,15 +47,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this is a policy-based host class for a discrete Route11 process
+// this is a Process Policy host class used to form discrete Route11 Processes
 
-template< typename Policy >
-class R11Process : public Policy
+template< typename PP >
+class R11Process : public PP
 {
-  static_assert( !std::is_destructible< Policy >::value, "Process policy should not be destructible" );
+  static_assert( !std::is_destructible< PP >::value, "Process Policy should not be destructible" );
 
 public:
-  using Policy::Policy;
+  using PP::PP;
 
   void SetBufferCount( int_fast8_t bufferCount );
 
@@ -65,10 +65,10 @@ public:
   void SetInput( const T& value, int_fast8_t bufferNo = -1 );
 
   template< uint_fast16_t input >
-  auto GetInput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< input >( Policy::input_ ) );
+  auto GetInput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< input >( PP::input_ ) );
 
   template< uint_fast16_t output >
-  auto GetOutput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< output >( Policy::output_ ) );
+  auto GetOutput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< output >( PP::output_ ) );
 
 public:
   static const uint_fast16_t inputCount = std::tuple_size< decltype( R11Process::input_ ) >::value;
@@ -92,8 +92,8 @@ private:
 
 //=============================================================================
 
-template< typename Policy >
-void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
+template< typename PP >
+void R11Process< PP >::SetBufferCount( int_fast8_t bufferCount )
 {
   if( bufferCount < 0 || bufferCount == _bufferCount )
   {
@@ -131,32 +131,32 @@ void R11Process< Policy >::SetBufferCount( int_fast8_t bufferCount )
 
 //-----------------------------------------------------------------------------
 
-template< typename Policy >
-void R11Process< Policy >::Tick( int_fast8_t bufferNo )
+template< typename PP >
+void R11Process< PP >::Tick( int_fast8_t bufferNo )
 {
   // if multithreaded, sync with previous thread before continuing
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _WaitForRelease( bufferNo );
-    Policy::input_ = _inputBuffers[ bufferNo ];
+    PP::input_ = _inputBuffers[ bufferNo ];
   }
 
-  // call policy's Process_ method
-  Policy::Process_();
+  // call PP's Process_ method
+  PP::Process_();
 
   // if multithreaded, notify the next waiting thread
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
-    _outputBuffers[ bufferNo ] = Policy::output_;
+    _outputBuffers[ bufferNo ] = PP::output_;
     _ReleaseNextBuffer( bufferNo );
   }
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename Policy >
+template< typename PP >
 template< uint_fast16_t input, typename T >
-void R11Process< Policy >::SetInput( const T& value, int_fast8_t bufferNo )
+void R11Process< PP >::SetInput( const T& value, int_fast8_t bufferNo )
 {
   // if multithreaded, set the requested buffer's input
   if( bufferNo >= 0 && bufferNo < _bufferCount )
@@ -165,15 +165,15 @@ void R11Process< Policy >::SetInput( const T& value, int_fast8_t bufferNo )
   }
   else
   {
-    std::get< input >( Policy::input_ ) = value;
+    std::get< input >( PP::input_ ) = value;
   }
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename Policy >
+template< typename PP >
 template< uint_fast16_t input >
-auto R11Process< Policy >::GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( Policy::input_ ) )
+auto R11Process< PP >::GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( PP::input_ ) )
 {
   // if multithreaded, get the requested buffer's input
   if( bufferNo >= 0 && bufferNo < _bufferCount )
@@ -182,15 +182,15 @@ auto R11Process< Policy >::GetInput( int_fast8_t bufferNo ) -> decltype( std::ge
   }
   else
   {
-    return std::get< input >( Policy::input_ );
+    return std::get< input >( PP::input_ );
   }
 }
 
 //-----------------------------------------------------------------------------
 
-template< typename Policy >
+template< typename PP >
 template< uint_fast16_t output >
-auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( Policy::output_ ) )
+auto R11Process< PP >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( PP::output_ ) )
 {
   // if multithreaded, get the requested buffer's output
   if( bufferNo >= 0 && bufferNo < _bufferCount )
@@ -199,14 +199,14 @@ auto R11Process< Policy >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::g
   }
   else
   {
-    return std::get< output >( Policy::output_ );
+    return std::get< output >( PP::output_ );
   }
 }
 
 //=============================================================================
 
-template< typename Policy >
-void R11Process< Policy >::_WaitForRelease( int_fast8_t currentBufferNo )
+template< typename PP >
+void R11Process< PP >::_WaitForRelease( int_fast8_t currentBufferNo )
 {
   _releaseMutexes[ currentBufferNo ].lock();
   if( !_gotReleases[ currentBufferNo ] )
@@ -219,8 +219,8 @@ void R11Process< Policy >::_WaitForRelease( int_fast8_t currentBufferNo )
 
 //=============================================================================
 
-template< typename Policy >
-void R11Process< Policy >::_ReleaseNextBuffer( int_fast8_t currentBufferNo )
+template< typename PP >
+void R11Process< PP >::_ReleaseNextBuffer( int_fast8_t currentBufferNo )
 {
   ++currentBufferNo %= _bufferCount;
 

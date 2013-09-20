@@ -29,7 +29,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#include "R11WaveStreamer.h"
+#include "R11PpWaveStreamer.h"
 
 #include <fstream>
 #include <iostream>
@@ -37,7 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //=============================================================================
 
-R11WaveStreamer::R11WaveStreamer()
+R11PpWaveStreamer::R11PpWaveStreamer()
 {
   _leftChannel.resize( _bufferSize );
   _rightChannel.resize( _bufferSize );
@@ -45,11 +45,11 @@ R11WaveStreamer::R11WaveStreamer()
 
 //-----------------------------------------------------------------------------
 
-R11WaveStreamer::~R11WaveStreamer() {}
+R11PpWaveStreamer::~R11PpWaveStreamer() {}
 
 //=============================================================================
 
-bool R11WaveStreamer::LoadFile( std::string& filePath )
+bool R11PpWaveStreamer::LoadFile( std::string& filePath )
 {
   if( filePath == "" || filePath == _filePath )
   {
@@ -178,21 +178,21 @@ bool R11WaveStreamer::LoadFile( std::string& filePath )
 
 //-----------------------------------------------------------------------------
 
-void R11WaveStreamer::Play()
+void R11PpWaveStreamer::Play()
 {
   _isPlaying = true;
 }
 
 //-----------------------------------------------------------------------------
 
-void R11WaveStreamer::Pause()
+void R11PpWaveStreamer::Pause()
 {
   _isPlaying = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void R11WaveStreamer::Stop()
+void R11PpWaveStreamer::Stop()
 {
   _busyMutex.lock();
 
@@ -204,14 +204,14 @@ void R11WaveStreamer::Stop()
 
 //-----------------------------------------------------------------------------
 
-bool R11WaveStreamer::IsPlaying()
+bool R11PpWaveStreamer::IsPlaying()
 {
   return _isPlaying;
 }
 
 //=============================================================================
 
-void R11WaveStreamer::Process_()
+void R11PpWaveStreamer::Process_()
 {
   LoadFile( std::get< 0 >( input_ ) );
   std::get< 1 >( input_ ) ? Play() : Pause();

@@ -29,16 +29,16 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#ifndef R11MICWAVEMIXER_H
-#define R11MICWAVEMIXER_H
+#ifndef R11PSMICWAVEMIXER_H
+#define R11PSMICWAVEMIXER_H
 
 //-----------------------------------------------------------------------------
 
 #include "../include/Route11.h"
 
-#include "R11AudioDevice.h"
-#include "R11Crossfader.h"
-#include "R11WaveStreamer.h"
+#include "R11PpAudioDevice.h"
+#include "R11PpCrossfader.h"
+#include "R11PpWaveStreamer.h"
 
 using Route11::R11AsyncProcess;
 using Route11::R11Process;
@@ -47,16 +47,16 @@ using Route11::R11ProcessPair;
 
 //=============================================================================
 
-// this class is used to route a "Mic/Wave Mixer" process system
+// this class is used to route a "Mic/Wave Mixer" Process System
 // (refer to the "doc" folder for detailed diagrams of each routing step)
 
-class _R11MicWaveMixer
+class _R11PsMicWaveMixer
 {
 private:
   // step 1 : define aliases for processes required
-  using Ws = R11Process< R11WaveStreamer >;
-  using Cf = R11Process< R11Crossfader >;
-  using Ad = R11Process< R11AudioDevice >;
+  using Ws = R11Process< R11PpWaveStreamer >;
+  using Cf = R11Process< R11PpCrossfader >;
+  using Ad = R11Process< R11PpAudioDevice >;
 
   // step 2 : pair 2 crossfaders
   typedef R11ProcessPair
@@ -95,13 +95,13 @@ public:
 
 //-----------------------------------------------------------------------------
 
-// this class is used to instantiate a "Mic/Wave Mixer" process system
+// this class is used to instantiate a "Mic/Wave Mixer" Process System
 
-class R11MicWaveMixer : public _R11MicWaveMixer::T
+class R11PsMicWaveMixer : public _R11PsMicWaveMixer::T
 {
 public:
   // inherit base constructors
-  using _R11MicWaveMixer::T::T;
+  using _R11PsMicWaveMixer::T::T;
 
   // define user-friendly input enumeration for end user
   enum Inputs
@@ -115,4 +115,4 @@ public:
 
 //=============================================================================
 
-#endif // R11MICWAVEMIXER_H
+#endif // R11PSMICWAVEMIXER_H

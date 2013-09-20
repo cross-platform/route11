@@ -29,17 +29,17 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#ifndef R11CROSSFADER_H
-#define R11CROSSFADER_H
+#ifndef R11PPCROSSFADER_H
+#define R11PPCROSSFADER_H
 
 //=============================================================================
 
-// this process policy implements a crossfader between 2 input audio streams
+// this Process Policy implements a crossfader between 2 input audio streams
 
-class R11Crossfader
+class R11PpCrossfader
 {
 protected:
-  ~R11Crossfader() = default;
+  ~R11PpCrossfader() = default;
 
   //-----------------------------------------------------------------------------
 
@@ -87,4 +87,4 @@ private:
 
 //=============================================================================
 
-#endif // R11CROSSFADER_H
+#endif // R11PPCROSSFADER_H

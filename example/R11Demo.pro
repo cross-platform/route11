@@ -6,15 +6,12 @@ CONFIG += c++11
 
 SOURCES += \
     rtaudio/RtAudio.cpp \
-    R11WaveStreamer.cpp \
-    R11AudioDevice.cpp \
-    main.cpp
+    main.cpp \
+    R11PpAudioDevice.cpp \
+    R11PpWaveStreamer.cpp
 
 HEADERS += \
     rtaudio/RtAudio.h \
-    R11WaveStreamer.h \
-    R11Crossfader.h \
-    R11AudioDevice.h \
     ../include/Route11.h \
     ../src/R11ProcessPair.h \
     ../src/R11ProcessLoop.h \
@@ -22,7 +19,10 @@ HEADERS += \
     ../src/R11DspComponent.h \
     ../src/R11AsyncProcessThread.h \
     ../src/R11AsyncProcess.h \
-    R11MicWaveMixer.h
+    R11PsMicWaveMixer.h \
+    R11PpWaveStreamer.h \
+    R11PpAudioDevice.h \
+    R11PpCrossfader.h
 
 DEFINES +=__LINUX_ALSA__
 LIBS += -lasound

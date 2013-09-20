@@ -29,24 +29,24 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
-#include "R11MicWaveMixer.h"
+#include "R11PsMicWaveMixer.h"
 
 //=============================================================================
 
-// this application instantiates a Route11 "Mic/Wave Mixer", sets the input
-// wave file and crossfade levels, then ticks the system 1500 times before
-// exiting.
+// this application instantiates a Route11 "Mic/Wave Mixer" Process System,
+// sets the input wave file and crossfade levels, then ticks the system 1500
+// times before exiting.
 
 int main()
 {
-  // create a "Mic/Wave Mixer" process system
-  R11MicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
+  // create a "Mic/Wave Mixer" Process System
+  R11PsMicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
   // set mixer input values
-  mixer.SetInput< R11MicWaveMixer::File >( "../Tchaikovski-Swan-Lake-Scene.wav" );
-  mixer.SetInput< R11MicWaveMixer::Play >( true );
-  mixer.SetInput< R11MicWaveMixer::Fade1 >( 0.75 );
-  mixer.SetInput< R11MicWaveMixer::Fade2 >( 0.75 );
+  mixer.SetInput< R11PsMicWaveMixer::File >( "../Tchaikovski-Swan-Lake-Scene.wav" );
+  mixer.SetInput< R11PsMicWaveMixer::Play >( true );
+  mixer.SetInput< R11PsMicWaveMixer::Fade1 >( 0.75 );
+  mixer.SetInput< R11PsMicWaveMixer::Fade2 >( 0.75 );
 
   // tick mixer system
   for( int i = 0; i < 1500; ++i )

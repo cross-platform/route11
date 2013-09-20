@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class enables a Route11 process to be multithreaded
+// this class enables a Route11 Process to be multithreaded
 
 template< typename PT >
 class R11AsyncProcess
@@ -141,7 +141,7 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
     threads_[ i ].Initialise( std::bind( &PT::Tick, &_process, i ) );
   }
 
-  // update the process buffer count to match new thread count
+  // update _process buffer count to match new thread count
   _process.SetBufferCount( threadCount );
 
   threadCount_ = threadCount;
