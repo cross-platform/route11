@@ -24,5 +24,5 @@ HEADERS += \
     R11PpAudioDevice.h \
     R11PpCrossfader.h
 
-DEFINES +=__LINUX_ALSA__
+DEFINES += __LINUX_ALSA__
 LIBS += -lasound
