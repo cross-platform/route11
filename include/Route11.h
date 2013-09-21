@@ -70,12 +70,12 @@ template< typename... T > void unused( T&&... ) {}
 
   \section features_sec Features
   - <b>Automatic branch synchronization</b> - The result of data diverging across parallel branches is guaranteed to arrive synchronized at a converging point.
+  - <b>Compile-time system routing</b> - Route complex process systems at compile-time to avoid the overhead of construction at run-time.
+  - <b>Compile-time type safety</b> - Processes only accept inputs of statically specified value types, resulting in stable, type safe process systems.
   - <b>Dynamic thread count adjustment</b> - Specify at run-time, the number of threads in which you require a process system to run.
   - <b>Feedback loops</b> - Create true closed-circuit systems by feeding process outputs back into previous process inputs.
   - <b>High performance parallel processing</b> - Process systems use advanced multi-threaded scheduling to maximize data flow efficiency.
   - <b>Non-threaded platform support</b> - Develop for (or port to) platforms without multi-threading support and execute complex process systems in a single thread.
-  - <b>Compile-time system routing</b> - Route complex process systems at compile-time to avoid the overhead of construction at run-time.
-  - <b>Compile-time type safety</b> - Processes only accept inputs of statically specified value types, resulting in stable, type safe process systems.
 
   \n
 
