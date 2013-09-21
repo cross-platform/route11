@@ -89,7 +89,7 @@ private:
 
 public:
   // define public alias "T" as system type
-  // (async allows system to be multithreaded)
+  // (async allows system to be multi-threaded)
   using T = R11AsyncProcess< Ws_CfCfAd_ >;
 };
 
