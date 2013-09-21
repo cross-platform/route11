@@ -59,7 +59,7 @@ public:
 
   void SetBufferCount( int_fast8_t bufferCount )
   {
-    // set interal _process buffer count
+    // set internal _process buffer count
     _process.SetBufferCount( bufferCount );
   }
 
