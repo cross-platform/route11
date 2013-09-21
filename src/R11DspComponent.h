@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class allows a Route11 process to be used as a component within DSPatch
+/// this class allows a Route11 process to be used as a component within DSPatch
 
 template< typename PT >
 class R11DspComponent final : public DspComponent
