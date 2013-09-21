@@ -33,13 +33,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //=============================================================================
 
-// this application instantiates a Route11 "Mic/Wave Mixer" Process System,
-// sets the input wave file and crossfade levels, then ticks the system 1500
-// times before exiting.
+/// this application instantiates a Route11 "Mic/Wave Mixer" process system,
+/// sets the input wave file and crossfade levels, then ticks the system 1500
+/// times before exiting.
 
 int main()
 {
-  // create a "Mic/Wave Mixer" Process System
+  // create a "Mic/Wave Mixer" process system
   R11PsMicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
   // set mixer input values

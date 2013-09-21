@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class defines a feedback loop from a Process' outputs to its own inputs
+/// This class defines a feedback loop from a process' outputs to its own inputs
 
 template< uint_fast16_t PinputCount, uint_fast16_t PoutputCount, typename PT,
           uint_fast16_t fromOutput, uint_fast16_t... toInput >

@@ -47,12 +47,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this is a Process Policy host class used to form Route11 Process Primitives
+/// This is a process policy host class used to form Route11 process primitives
 
 template< typename PP >
 class R11Process : public PP
 {
-  static_assert( !std::is_destructible< PP >::value, "Process Policy should not be destructible" );
+  static_assert( !std::is_destructible< PP >::value, "Process policy should not be destructible" );
 
 public:
   using PP::PP;
@@ -134,7 +134,7 @@ void R11Process< PP >::SetBufferCount( int_fast8_t bufferCount )
 template< typename PP >
 void R11Process< PP >::Tick( int_fast8_t bufferNo )
 {
-  // if multithreaded, sync with previous thread before continuing
+  // if multi-threaded, sync with previous thread before continuing
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _WaitForRelease( bufferNo );
@@ -144,7 +144,7 @@ void R11Process< PP >::Tick( int_fast8_t bufferNo )
   // call PP's Process_ method
   PP::Process_();
 
-  // if multithreaded, notify the next waiting thread
+  // if multi-threaded, notify the next waiting thread
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     _outputBuffers[ bufferNo ] = PP::output_;
@@ -158,7 +158,7 @@ template< typename PP >
 template< uint_fast16_t input, typename T >
 void R11Process< PP >::SetInput( const T& value, int_fast8_t bufferNo )
 {
-  // if multithreaded, set the requested buffer's input
+  // if multi-threaded, set the requested buffer's input
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     std::get< input >( _inputBuffers[ bufferNo ] ) = value;
@@ -175,7 +175,7 @@ template< typename PP >
 template< uint_fast16_t input >
 auto R11Process< PP >::GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( PP::input_ ) )
 {
-  // if multithreaded, get the requested buffer's input
+  // if multi-threaded, get the requested buffer's input
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     return std::get< input >( _inputBuffers[ bufferNo ] );
@@ -192,7 +192,7 @@ template< typename PP >
 template< uint_fast16_t output >
 auto R11Process< PP >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( PP::output_ ) )
 {
-  // if multithreaded, get the requested buffer's output
+  // if multi-threaded, get the requested buffer's output
   if( bufferNo >= 0 && bufferNo < _bufferCount )
   {
     return std::get< output >( _outputBuffers[ bufferNo ] );

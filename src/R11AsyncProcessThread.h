@@ -51,7 +51,7 @@ enum class R11ThreadConfig
 
 //=============================================================================
 
-// this class is used by R11AsyncProcess to control each process thread
+/// This class is used by R11AsyncProcess to control each process thread
 
 class R11AsyncProcessThread
 {

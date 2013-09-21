@@ -45,7 +45,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class enables a Route11 Process to be multithreaded
+/// This class enables a Route11 process to be multi-threaded
 
 template< typename PT >
 class R11AsyncProcess
@@ -152,7 +152,7 @@ void R11AsyncProcess< PT >::SetThreadCount( int_fast8_t threadCount )
 template< typename PT >
 void R11AsyncProcess< PT >::Tick()
 {
-  // if multithreaded, tick the appropriate thread
+  // if multi-threaded, tick the appropriate thread
   if( threadCount_ > 0 )
   {
     threads_[ currentThread_ ].Sync();
@@ -172,7 +172,7 @@ template< typename PT >
 template< uint_fast16_t input, typename T >
 void R11AsyncProcess< PT >::SetInput( const T& value )
 {
-  // if multithreaded, sync with and set input for all threads
+  // if multi-threaded, sync with and set input for all threads
   if( threadCount_ > 0 )
   {
     for( uint_fast8_t i = 0; i < threads_.size(); ++i )
@@ -194,7 +194,7 @@ template< typename PT >
 template< uint_fast16_t input >
 auto R11AsyncProcess< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
 {
-  // if multithreaded, sync with current thread then get it's current input
+  // if multi-threaded, sync with current thread then get it's current input
   if( threadCount_ > 0 )
   {
     threads_[ currentThread_ ].Sync();
@@ -213,7 +213,7 @@ template< typename PT >
 template< uint_fast16_t output >
 auto R11AsyncProcess< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
 {
-  // if multithreaded, sync with current thread then get it's current output
+  // if multi-threaded, sync with current thread then get it's current output
   if( threadCount_ > 0 )
   {
     threads_[ currentThread_ ].Sync();

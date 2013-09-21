@@ -41,7 +41,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace Route11
 {
 
-// this class defines either a parallel or serial connected pair of processes
+/// This class defines either a parallel or serial connected pair of processes
 
 template< uint_fast16_t P1inputCount, uint_fast16_t P1outputCount, typename P1T,
           uint_fast16_t P2inputCount, uint_fast16_t P2outputCount, typename P2T,

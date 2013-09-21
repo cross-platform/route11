@@ -47,8 +47,8 @@ using Route11::R11ProcessPair;
 
 //=============================================================================
 
-// this class is used to route a "Mic/Wave Mixer" Process System
-// (refer to the "doc" folder for detailed diagrams of each routing step)
+/// this class is used to route a "Mic/Wave Mixer" process system
+/// (refer to the "doc" folder for detailed diagrams of each routing step)
 
 class _R11PsMicWaveMixer
 {
@@ -95,7 +95,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-// this class is used to instantiate a "Mic/Wave Mixer" Process System
+// this class is used to instantiate a "Mic/Wave Mixer" process system
 
 class R11PsMicWaveMixer : public _R11PsMicWaveMixer::T
 {

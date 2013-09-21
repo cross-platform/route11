@@ -42,7 +42,7 @@ struct RtAudioMembers;
 
 //=============================================================================
 
-// this Process Policy implements a stereo audio streaming IO device
+/// this process policy implements a stereo audio streaming IO device
 
 class R11PpAudioDevice
 {

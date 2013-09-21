@@ -39,7 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //=============================================================================
 
-// this Process Policy implements a stereo wave file audio streamer
+/// this process policy implements a stereo wave file audio streamer
 
 class R11PpWaveStreamer
 {

@@ -34,7 +34,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 //=============================================================================
 
-// this Process Policy implements a crossfader between 2 input audio streams
+/// this process policy implements a crossfader between 2 input audio streams
 
 class R11PpCrossfader
 {
