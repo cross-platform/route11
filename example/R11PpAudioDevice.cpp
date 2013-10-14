@@ -30,9 +30,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************/
 
 #include "R11PpAudioDevice.h"
-
 #include "../include/Route11.h"
-#include "rtaudio/RtAudio.h"
+
+#include <RtAudio.h>
 
 #include <iostream>
 #include "string.h"

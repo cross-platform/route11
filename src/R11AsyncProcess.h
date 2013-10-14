@@ -66,11 +66,43 @@ public:
   template< uint_fast16_t input, typename T >
   void SetInput( const T& value );
 
+  //-----------------------------------------------------------------------------
+
   template< uint_fast16_t input >
-  auto GetInput() -> decltype( _process.template GetInput< input >() );
+  auto GetInput() -> decltype( _process.template GetInput< input >() )
+  {
+    // if multi-threaded, sync with current thread then get it's current input
+    if( threadCount_ > 0 )
+    {
+      threads_[ currentThread_ ].Sync();
+      return _process.template GetInput< input >( currentThread_ );
+    }
+    // else get input normally
+    else
+    {
+      return _process.template GetInput< input >();
+    }
+  }
+
+  //-----------------------------------------------------------------------------
 
   template< uint_fast16_t output >
-  auto GetOutput() -> decltype( _process.template GetOutput< output >() );
+  auto GetOutput() -> decltype( _process.template GetOutput< output >() )
+  {
+    // if multi-threaded, sync with current thread then get it's current output
+    if( threadCount_ > 0 )
+    {
+      threads_[ currentThread_ ].Sync();
+      return _process.template GetOutput< output >( currentThread_ );
+    }
+    // else get output normally
+    else
+    {
+      return _process.template GetOutput< output >();
+    }
+  }
+
+  //-----------------------------------------------------------------------------
 
 public:
   static const uint_fast16_t inputCount = PT::inputCount;
@@ -185,44 +217,6 @@ void R11AsyncProcess< PT >::SetInput( const T& value )
   else
   {
     _process.template SetInput< input >( value );
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-template< typename PT >
-template< uint_fast16_t input >
-auto R11AsyncProcess< PT >::GetInput() -> decltype( _process.template GetInput< input >() )
-{
-  // if multi-threaded, sync with current thread then get it's current input
-  if( threadCount_ > 0 )
-  {
-    threads_[ currentThread_ ].Sync();
-    return _process.template GetInput< input >( currentThread_ );
-  }
-  // else get input normally
-  else
-  {
-    return _process.template GetInput< input >();
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-template< typename PT >
-template< uint_fast16_t output >
-auto R11AsyncProcess< PT >::GetOutput() -> decltype( _process.template GetOutput< output >() )
-{
-  // if multi-threaded, sync with current thread then get it's current output
-  if( threadCount_ > 0 )
-  {
-    threads_[ currentThread_ ].Sync();
-    return _process.template GetOutput< output >( currentThread_ );
-  }
-  // else get output normally
-  else
-  {
-    return _process.template GetOutput< output >();
   }
 }
 
