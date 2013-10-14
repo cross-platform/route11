@@ -57,7 +57,7 @@ class R11AsyncProcessThread
 {
 public:
   R11AsyncProcessThread() = default;
-  R11AsyncProcessThread( const R11AsyncProcessThread& other ) { unused( other ); }
+  R11AsyncProcessThread( const R11AsyncProcessThread& other );
 
   ~R11AsyncProcessThread();
 
@@ -84,99 +84,6 @@ private:
   std::condition_variable_any _syncCondt;
   std::thread _thread = std::thread( &R11AsyncProcessThread::_ThreadTick, this );
 };
-
-//=============================================================================
-
-inline R11AsyncProcessThread::~R11AsyncProcessThread()
-{
-  _Stop();
-}
-
-//=============================================================================
-
-inline void R11AsyncProcessThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
-{
-  // store callback method for use in _ThreadTick
-  _tickMethod = tickMethod;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void R11AsyncProcessThread::Sync()
-{
-  _resumeMutex.lock();
-
-  if( !_gotSync ) // if haven't already got sync
-  {
-    _syncCondt.wait( _resumeMutex ); // wait for sync
-  }
-
-  _resumeMutex.unlock();
-}
-
-//-----------------------------------------------------------------------------
-
-inline void R11AsyncProcessThread::Resume()
-{
-  _resumeMutex.lock();
-
-  _gotSync = false; // reset the sync flag
-
-  _gotResume = true; // set the resume flag
-  _resumeCondt.notify_all();
-
-  _resumeMutex.unlock();
-}
-
-//=============================================================================
-
-inline void R11AsyncProcessThread::_Stop()
-{
-  // set _stop flag (notify _ThreadTick to exit)
-  _stop = true;
-
-  // wait until _ThreadTick exits
-  while( !_stopped )
-  {
-    _syncCondt.notify_all();
-    _resumeCondt.notify_all();
-    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-  }
-
-  // join with thread
-  _thread.join();
-}
-
-//-----------------------------------------------------------------------------
-
-inline void R11AsyncProcessThread::_ThreadTick()
-{
-  while( !_stop )
-  {
-    _resumeMutex.lock();
-
-    // notify sync
-    _gotSync = true; // set the sync flag
-    _syncCondt.notify_all();
-
-    // wait for resume
-    if( !_gotResume ) // if haven't already got resume
-    {
-      _resumeCondt.wait( _resumeMutex ); // wait for resume
-    }
-    _gotResume = false; // reset the resume flag
-
-    _resumeMutex.unlock();
-
-    if( !_stop && _tickMethod != nullptr )
-    {
-      _tickMethod( 0 );
-    }
-  }
-
-  // set _stopped flag (notify _Stop that the thread has exited)
-  _stopped = true;
-}
 
 }
 
