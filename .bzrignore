@@ -1,3 +1,2 @@
-./example/R11Demo.pro.user
-./build-R11Demo-Desktop_clang-Debug
-./build-R11Demo-Desktop_clang-Release
+./example-build
+./example/CMakeLists.txt.user

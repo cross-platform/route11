@@ -64,11 +64,39 @@ public:
   template< uint_fast16_t input, typename T >
   void SetInput( const T& value, int_fast8_t bufferNo = -1 );
 
+  //-----------------------------------------------------------------------------
+
   template< uint_fast16_t input >
-  auto GetInput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< input >( PP::input_ ) );
+  auto GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( this->input_ ) )
+  {
+    // if multi-threaded, get the requested buffer's input
+    if( bufferNo >= 0 && bufferNo < _bufferCount )
+    {
+      return std::get< input >( _inputBuffers[ bufferNo ] );
+    }
+    else
+    {
+      return std::get< input >( PP::input_ );
+    }
+  }
+
+  //-----------------------------------------------------------------------------
 
   template< uint_fast16_t output >
-  auto GetOutput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< output >( PP::output_ ) );
+  auto GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( this->output_ ) )
+  {
+    // if multi-threaded, get the requested buffer's output
+    if( bufferNo >= 0 && bufferNo < _bufferCount )
+    {
+      return std::get< output >( _outputBuffers[ bufferNo ] );
+    }
+    else
+    {
+      return std::get< output >( PP::output_ );
+    }
+  }
+
+  //-----------------------------------------------------------------------------
 
 public:
   static const uint_fast16_t inputCount = std::tuple_size< decltype( R11Process::input_ ) >::value;
@@ -86,8 +114,8 @@ private:
   std::vector< decltype( R11Process::output_ ) > _outputBuffers;
 
   std::deque< bool > _gotReleases;
-  std::unique_ptr< std::mutex[] > _releaseMutexes = nullptr;
-  std::unique_ptr< std::condition_variable_any[] > _releaseCondts = nullptr;
+  std::unique_ptr< std::mutex[] > _releaseMutexes;
+  std::unique_ptr< std::condition_variable_any[] > _releaseCondts;
 };
 
 //=============================================================================
@@ -166,40 +194,6 @@ void R11Process< PP >::SetInput( const T& value, int_fast8_t bufferNo )
   else
   {
     std::get< input >( PP::input_ ) = value;
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-template< typename PP >
-template< uint_fast16_t input >
-auto R11Process< PP >::GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( PP::input_ ) )
-{
-  // if multi-threaded, get the requested buffer's input
-  if( bufferNo >= 0 && bufferNo < _bufferCount )
-  {
-    return std::get< input >( _inputBuffers[ bufferNo ] );
-  }
-  else
-  {
-    return std::get< input >( PP::input_ );
-  }
-}
-
-//-----------------------------------------------------------------------------
-
-template< typename PP >
-template< uint_fast16_t output >
-auto R11Process< PP >::GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( PP::output_ ) )
-{
-  // if multi-threaded, get the requested buffer's output
-  if( bufferNo >= 0 && bufferNo < _bufferCount )
-  {
-    return std::get< output >( _outputBuffers[ bufferNo ] );
-  }
-  else
-  {
-    return std::get< output >( PP::output_ );
   }
 }
 
