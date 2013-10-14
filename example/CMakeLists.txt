@@ -12,6 +12,10 @@ add_definitions(
     -D__LINUX_ALSA__
 )
 
+include_directories(
+    rtaudio/
+)
+
 add_executable(
     ${PROJECT_NAME}
 
