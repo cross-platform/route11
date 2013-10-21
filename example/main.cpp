@@ -43,7 +43,7 @@ int main()
   R11PsMicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
   // set mixer input values
-  mixer.SetInput< R11PsMicWaveMixer::File >( "../example/Tchaikovski-Swan-Lake-Scene.wav" );
+  mixer.SetInput< R11PsMicWaveMixer::File >( "Tchaikovski-Swan-Lake-Scene.wav" );
   mixer.SetInput< R11PsMicWaveMixer::Play >( true );
   mixer.SetInput< R11PsMicWaveMixer::Fade1 >( 0.75 );
   mixer.SetInput< R11PsMicWaveMixer::Fade2 >( 0.75 );

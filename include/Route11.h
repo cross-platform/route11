@@ -63,8 +63,9 @@ template< typename... T > void unused( T&&... ) {}
   "2 processes connected in series" may refer to 2 primitives, 2 systems, or
   one of each)
 
-  <b>NOTE</b>: Route11 was written using many new C++11 features. It is strongly
-  recommend that you use the Clang C++11 compiler when building this project.
+  <b>NOTE</b>: Route11 was written using many new C++11 features, so it is
+  required that a C++11 compatible compiler (e.g Clang or GCC) is used when
+  building this project.
 
   \n
 
@@ -112,6 +113,10 @@ template< typename... T > void unused( T&&... ) {}
 \n
 
 \section release_notes Release Notes
+
+\subsection v02 v.0.2 (15 October 2013)
+  - Replaced Qt project with more flexible CMakeLists.
+  - Adjusted code for GCC compiler.
 
 \subsection v01 v.0.1 (20 September 2013)
   - Initial release.

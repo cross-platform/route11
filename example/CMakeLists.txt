@@ -39,3 +39,5 @@ target_link_libraries(
     asound
     pthread
 )
+
+file(COPY Tchaikovski-Swan-Lake-Scene.wav DESTINATION ./)
