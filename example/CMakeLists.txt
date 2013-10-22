@@ -36,6 +36,7 @@ target_link_libraries(
     ${PROJECT_NAME}
 
     route11
+
     asound
     pthread
 )

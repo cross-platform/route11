@@ -67,7 +67,7 @@ public:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t input >
-  auto GetInput( int_fast8_t bufferNo ) -> decltype( std::get< input >( this->input_ ) )
+  auto GetInput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< input >( this->input_ ) )
   {
     // if multi-threaded, get the requested buffer's input
     if( bufferNo >= 0 && bufferNo < _bufferCount )
@@ -83,7 +83,7 @@ public:
   //-----------------------------------------------------------------------------
 
   template< uint_fast16_t output >
-  auto GetOutput( int_fast8_t bufferNo ) -> decltype( std::get< output >( this->output_ ) )
+  auto GetOutput( int_fast8_t bufferNo = -1 ) -> decltype( std::get< output >( this->output_ ) )
   {
     // if multi-threaded, get the requested buffer's output
     if( bufferNo >= 0 && bufferNo < _bufferCount )
