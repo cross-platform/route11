@@ -77,8 +77,6 @@ R11PpAudioDevice::R11PpAudioDevice()
 R11PpAudioDevice::~R11PpAudioDevice()
 {
   _StopStream();
-
-  delete _rtAudio;
 }
 
 //-----------------------------------------------------------------------------

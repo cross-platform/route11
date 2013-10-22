@@ -31,6 +31,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "R11PpWaveStreamer.h"
 
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <string.h>
@@ -68,16 +69,16 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   }
 
   uint_fast32_t dwFileSize = 0, dwChunkSize = 0;
-  char* dwChunkId = new char[5];
-  char* dwExtra = new char[5];
+  std::array< char, 5 > dwChunkId;
+  std::array< char, 5 > dwExtra;
 
   dwChunkId[4] = 0;
   dwExtra[4] = 0;
 
   //look for 'RIFF' chunk identifier
   inFile.seekg( 0, std::ios::beg );
-  inFile.read( dwChunkId, 4 );
-  if( strcmp( dwChunkId, "RIFF" ) )
+  inFile.read( dwChunkId.data(), 4 );
+  if( strcmp( dwChunkId.data(), "RIFF" ) )
   {
     std::cerr << "'" << filePath << "' not found.\n";
     inFile.close();
@@ -93,8 +94,8 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   }
 
   inFile.seekg( 8, std::ios::beg ); //get file format
-  inFile.read( dwExtra, 4 );
-  if( strcmp( dwExtra, "WAVE" ) )
+  inFile.read( dwExtra.data(), 4 );
+  if( strcmp( dwExtra.data(), "WAVE" ) )
   {
     inFile.close();
     return false;
@@ -105,10 +106,10 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   for( uint_fast32_t i = 12; i < dwFileSize; )
   {
     inFile.seekg( i, std::ios::beg );
-    inFile.read( dwChunkId, 4 );
+    inFile.read( dwChunkId.data(), 4 );
     inFile.seekg( i + 4, std::ios::beg );
     inFile.read( reinterpret_cast<char*>( &dwChunkSize ), sizeof( dwChunkSize ) );
-    if( !strcmp( dwChunkId, "fmt " ) )
+    if( !strcmp( dwChunkId.data(), "fmt " ) )
     {
       inFile.seekg( i + 8, std::ios::beg );
 
@@ -142,10 +143,10 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   for( uint_fast32_t i = 12; i < dwFileSize; )
   {
     inFile.seekg( i, std::ios::beg );
-    inFile.read( dwChunkId, 4 );
+    inFile.read( dwChunkId.data(), 4 );
     inFile.seekg( i + 4, std::ios::beg );
     inFile.read( reinterpret_cast<char*>( &dwChunkSize ), sizeof( dwChunkSize ) );
-    if( !strcmp( dwChunkId, "data" ) )
+    if( !strcmp( dwChunkId.data(), "data" ) )
     {
       _waveData.resize( dwChunkSize / 2 );
       inFile.seekg( i + 8, std::ios::beg );

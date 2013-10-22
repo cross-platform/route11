@@ -37,6 +37,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <string>
 #include <vector>
 #include <condition_variable>
+#include <memory>
 
 struct RtAudioMembers;
 
@@ -104,7 +105,7 @@ private:
   std::vector< std::vector< float > > _outputChannels;
   std::vector< std::vector< float > > _inputChannels;
 
-  RtAudioMembers* _rtAudio;
+  std::unique_ptr< RtAudioMembers > _rtAudio;
 
   std::mutex _buffersMutex;
   std::mutex _syncMutex;
