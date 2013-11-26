@@ -1,63 +1,54 @@
 /************************************************************************
-Route11 - C++ Flow-Based Metaprogramming Library
-Copyright (c) 2013 Marcus Tomlinson
+ Route11 - C++ Flow-Based Metaprogramming Library
+ Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route11.
+ This file is part of Route11.
 
-Simplified BSD Licence:
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
+ Simplified BSD Licence:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
 
-Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
 
-Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-************************************************************************/
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ ************************************************************************/
 
 #include "R11AsyncProcessThread.h"
 #include "../include/Route11.h"
 
-//=============================================================================
-
-namespace Route11
-{
+using namespace Route11;
 
 R11AsyncProcessThread::~R11AsyncProcessThread()
 {
   _Stop();
 }
 
-//-----------------------------------------------------------------------------
-
 R11AsyncProcessThread::R11AsyncProcessThread( const R11AsyncProcessThread& other )
 {
   unused( other );
 }
-
-//=============================================================================
 
 void R11AsyncProcessThread::Initialise( std::function< void( int_fast8_t ) > tickMethod )
 {
   // store callback method for use in _ThreadTick
   _tickMethod = tickMethod;
 }
-
-//-----------------------------------------------------------------------------
 
 void R11AsyncProcessThread::Sync()
 {
@@ -71,8 +62,6 @@ void R11AsyncProcessThread::Sync()
   _resumeMutex.unlock();
 }
 
-//-----------------------------------------------------------------------------
-
 void R11AsyncProcessThread::Resume()
 {
   _resumeMutex.lock();
@@ -84,8 +73,6 @@ void R11AsyncProcessThread::Resume()
 
   _resumeMutex.unlock();
 }
-
-//=============================================================================
 
 void R11AsyncProcessThread::_Stop()
 {
@@ -103,8 +90,6 @@ void R11AsyncProcessThread::_Stop()
   // join with thread
   _thread.join();
 }
-
-//-----------------------------------------------------------------------------
 
 void R11AsyncProcessThread::_ThreadTick()
 {
@@ -134,7 +119,3 @@ void R11AsyncProcessThread::_ThreadTick()
   // set _stopped flag (notify _Stop that the thread has exited)
   _stopped = true;
 }
-
-}
-
-//=============================================================================

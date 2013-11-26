@@ -1,33 +1,33 @@
 /************************************************************************
-Route11 - C++ Flow-Based Metaprogramming Library
-Copyright (c) 2013 Marcus Tomlinson
+ Route11 - C++ Flow-Based Metaprogramming Library
+ Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route11.
+ This file is part of Route11.
 
-Simplified BSD Licence:
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
+ Simplified BSD Licence:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
 
-Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
 
-Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-************************************************************************/
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ ************************************************************************/
 
 #include "R11PpAudioDevice.h"
 #include "../include/Route11.h"
@@ -39,8 +39,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <cstdlib>
 #include <thread>
 
-//=============================================================================
-
 struct RtAudioMembers
 {
   std::vector< RtAudio::DeviceInfo > deviceList;
@@ -50,10 +48,8 @@ struct RtAudioMembers
   RtAudio::StreamParameters inputParams;
 };
 
-//=============================================================================
-
 R11PpAudioDevice::R11PpAudioDevice()
-: _rtAudio( new RtAudioMembers() )
+    : _rtAudio( new RtAudioMembers() )
 {
   _outputChannels.resize( 2 );
   _inputChannels.resize( 2 );
@@ -72,14 +68,10 @@ R11PpAudioDevice::R11PpAudioDevice()
   SetSampleRate( _sampleRate );
 }
 
-//-----------------------------------------------------------------------------
-
 R11PpAudioDevice::~R11PpAudioDevice()
 {
   _StopStream();
 }
-
-//-----------------------------------------------------------------------------
 
 bool R11PpAudioDevice::SetDevice( int_fast16_t deviceIndex )
 {
@@ -103,8 +95,6 @@ bool R11PpAudioDevice::SetDevice( int_fast16_t deviceIndex )
   return false;
 }
 
-//-----------------------------------------------------------------------------
-
 std::string R11PpAudioDevice::GetDeviceName( int_fast16_t deviceIndex )
 {
   if( deviceIndex >= 0 && deviceIndex < ( _deviceCount ) )
@@ -115,42 +105,30 @@ std::string R11PpAudioDevice::GetDeviceName( int_fast16_t deviceIndex )
   return "";
 }
 
-//-----------------------------------------------------------------------------
-
 uint_fast16_t R11PpAudioDevice::GetDeviceInputCount( int_fast16_t deviceIndex )
 {
   return _rtAudio->deviceList[deviceIndex].inputChannels;
 }
-
-//-----------------------------------------------------------------------------
 
 uint_fast16_t R11PpAudioDevice::GetDeviceOutputCount( int_fast16_t deviceIndex )
 {
   return _rtAudio->deviceList[deviceIndex].outputChannels;
 }
 
-//-----------------------------------------------------------------------------
-
 uint_fast16_t R11PpAudioDevice::GetCurrentDevice()
 {
   return _currentDevice;
 }
-
-//-----------------------------------------------------------------------------
 
 uint_fast16_t R11PpAudioDevice::GetDeviceCount()
 {
   return _deviceCount;
 }
 
-//-----------------------------------------------------------------------------
-
 bool R11PpAudioDevice::IsStreaming()
 {
   return _isStreaming;
 }
-
-//-----------------------------------------------------------------------------
 
 void R11PpAudioDevice::SetBufferSize( uint_fast32_t bufferSize )
 {
@@ -166,8 +144,6 @@ void R11PpAudioDevice::SetBufferSize( uint_fast32_t bufferSize )
   _StartStream();
 }
 
-//-----------------------------------------------------------------------------
-
 void R11PpAudioDevice::SetSampleRate( uint_fast32_t sampleRate )
 {
   _StopStream();
@@ -177,34 +153,30 @@ void R11PpAudioDevice::SetSampleRate( uint_fast32_t sampleRate )
   _StartStream();
 }
 
-//-----------------------------------------------------------------------------
-
 uint_fast32_t R11PpAudioDevice::GetSampleRate()
 {
   return _sampleRate;
 }
-
-//=============================================================================
 
 void R11PpAudioDevice::Process_()
 {
   // Wait until the sound card is ready for the next set of buffers
 
   _syncMutex.lock();
-  if( !_gotSyncReady )              // if haven't already got the release
-    _syncCondt.wait( _syncMutex );  // wait for sync
-  _gotSyncReady = false;            // reset the release flag
+  if( !_gotSyncReady ) // if haven't already got the release
+    _syncCondt.wait( _syncMutex ); // wait for sync
+  _gotSyncReady = false; // reset the release flag
   _syncMutex.unlock();
 
   // Retrieve incoming component buffers for the sound card to output
 
-  _outputChannels[0] = std::get< 0 >( input_ );
-  _outputChannels[1] = std::get< 1 >( input_ );
+  _outputChannels[0] = std::get < 0 > ( input_ );
+  _outputChannels[1] = std::get < 1 > ( input_ );
 
   // Retrieve incoming sound card buffers for the component to output
 
-  std::get< 0 >( output_ ) = _inputChannels[0];
-  std::get< 1 >( output_ ) = _inputChannels[1];
+  std::get < 0 > ( output_ ) = _inputChannels[0];
+  std::get < 1 > ( output_ ) = _inputChannels[1];
 
   // Inform the sound card that buffers are now ready
 
@@ -214,28 +186,22 @@ void R11PpAudioDevice::Process_()
   _buffersMutex.unlock();
 }
 
-//=============================================================================
-
 void R11PpAudioDevice::_WaitForBuffer()
 {
   _buffersMutex.lock();
-  if( !_gotWaitReady )										//if haven't already got the release
-    _waitCondt.wait( _buffersMutex );		  //wait for sync
-  _gotWaitReady = false;									//reset the release flag
+  if( !_gotWaitReady ) //if haven't already got the release
+    _waitCondt.wait( _buffersMutex ); //wait for sync
+  _gotWaitReady = false; //reset the release flag
   _buffersMutex.unlock();
 }
-
-//-----------------------------------------------------------------------------
 
 void R11PpAudioDevice::_SyncBuffer()
 {
   _syncMutex.lock();
-  _gotSyncReady = true;								//set release flag
-  _syncCondt.notify_all();						//release sync
+  _gotSyncReady = true; //set release flag
+  _syncCondt.notify_all(); //release sync
   _syncMutex.unlock();
 }
-
-//-----------------------------------------------------------------------------
 
 void R11PpAudioDevice::_StopStream()
 {
@@ -268,8 +234,6 @@ void R11PpAudioDevice::_StopStream()
   _syncCondt.notify_all();
 }
 
-//-----------------------------------------------------------------------------
-
 void R11PpAudioDevice::_StartStream()
 {
   RtAudio::StreamParameters* inputParams = NULL;
@@ -289,14 +253,8 @@ void R11PpAudioDevice::_StartStream()
   options.flags |= RTAUDIO_SCHEDULE_REALTIME;
   options.flags |= RTAUDIO_NONINTERLEAVED;
 
-  _rtAudio->audioStream.openStream( outputParams,
-                                    inputParams,
-                                    RTAUDIO_FLOAT32,
-                                    _sampleRate,
-                                    ( unsigned int* ) &_bufferSize,
-                                    &_StaticCallback,
-                                    this,
-                                    &options );
+  _rtAudio->audioStream.openStream( outputParams, inputParams, RTAUDIO_FLOAT32, _sampleRate,
+      ( unsigned int* ) &_bufferSize, &_StaticCallback, this, &options );
 
   _rtAudio->audioStream.startStream();
 
@@ -304,20 +262,12 @@ void R11PpAudioDevice::_StartStream()
   _isStreaming = true;
 }
 
-//-----------------------------------------------------------------------------
-
-int R11PpAudioDevice::_StaticCallback( void* outputBuffer,
-                                     void* inputBuffer,
-                                     unsigned int nBufferFrames,
-                                     double streamTime,
-                                     unsigned int status,
-                                     void* userData )
+int R11PpAudioDevice::_StaticCallback( void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames,
+    double streamTime, unsigned int status, void* userData )
 {
   unused( nBufferFrames, streamTime, status );
   return ( ( R11PpAudioDevice* ) userData )->_DynamicCallback( inputBuffer, outputBuffer );
 }
-
-//-----------------------------------------------------------------------------
 
 int R11PpAudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
 {
@@ -365,5 +315,3 @@ int R11PpAudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
 
   return 0;
 }
-
-//=============================================================================

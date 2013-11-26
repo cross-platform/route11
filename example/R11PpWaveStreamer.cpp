@@ -1,33 +1,33 @@
 /************************************************************************
-Route11 - C++ Flow-Based Metaprogramming Library
-Copyright (c) 2013 Marcus Tomlinson
+ Route11 - C++ Flow-Based Metaprogramming Library
+ Copyright (c) 2013 Marcus Tomlinson
 
-This file is part of Route11.
+ This file is part of Route11.
 
-Simplified BSD Licence:
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are
-met:
+ Simplified BSD Licence:
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
 
-Redistributions of source code must retain the above copyright notice,
-this list of conditions and the following disclaimer.
+ Redistributions of source code must retain the above copyright notice,
+ this list of conditions and the following disclaimer.
 
-Redistributions in binary form must reproduce the above copyright notice,
-this list of conditions and the following disclaimer in the documentation
-and/or other materials provided with the distribution.
+ Redistributions in binary form must reproduce the above copyright notice,
+ this list of conditions and the following disclaimer in the documentation
+ and/or other materials provided with the distribution.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-************************************************************************/
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+ CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ ************************************************************************/
 
 #include "R11PpWaveStreamer.h"
 
@@ -36,19 +36,15 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iostream>
 #include <string.h>
 
-//=============================================================================
-
 R11PpWaveStreamer::R11PpWaveStreamer()
 {
   _leftChannel.resize( _bufferSize );
   _rightChannel.resize( _bufferSize );
 }
 
-//-----------------------------------------------------------------------------
-
-R11PpWaveStreamer::~R11PpWaveStreamer() {}
-
-//=============================================================================
+R11PpWaveStreamer::~R11PpWaveStreamer()
+{
+}
 
 bool R11PpWaveStreamer::LoadFile( std::string& filePath )
 {
@@ -86,7 +82,7 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   }
 
   inFile.seekg( 4, std::ios::beg ); //get file size
-  inFile.read( reinterpret_cast<char*>( &dwFileSize ), sizeof( dwFileSize ) );
+  inFile.read( reinterpret_cast< char* >( &dwFileSize ), sizeof( dwFileSize ) );
   if( dwFileSize <= 16 )
   {
     inFile.close();
@@ -108,19 +104,19 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
     inFile.seekg( i, std::ios::beg );
     inFile.read( dwChunkId.data(), 4 );
     inFile.seekg( i + 4, std::ios::beg );
-    inFile.read( reinterpret_cast<char*>( &dwChunkSize ), sizeof( dwChunkSize ) );
+    inFile.read( reinterpret_cast< char* >( &dwChunkSize ), sizeof( dwChunkSize ) );
     if( !strcmp( dwChunkId.data(), "fmt " ) )
     {
       inFile.seekg( i + 8, std::ios::beg );
 
       _waveFormat.Clear();
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.format ), 2 );
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.channelCount ), 2 );
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.sampleRate ), 4 );
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.byteRate ), 4 );
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.frameSize ), 2 );
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.bitDepth ), 2 );
-      inFile.read( reinterpret_cast<char*>( &_waveFormat.extraDataSize ), 2 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.format ), 2 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.channelCount ), 2 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.sampleRate ), 4 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.byteRate ), 4 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.frameSize ), 2 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.bitDepth ), 2 );
+      inFile.read( reinterpret_cast< char* >( &_waveFormat.extraDataSize ), 2 );
 
       bFilledFormat = true;
       break;
@@ -145,12 +141,12 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
     inFile.seekg( i, std::ios::beg );
     inFile.read( dwChunkId.data(), 4 );
     inFile.seekg( i + 4, std::ios::beg );
-    inFile.read( reinterpret_cast<char*>( &dwChunkSize ), sizeof( dwChunkSize ) );
+    inFile.read( reinterpret_cast< char* >( &dwChunkSize ), sizeof( dwChunkSize ) );
     if( !strcmp( dwChunkId.data(), "data" ) )
     {
       _waveData.resize( dwChunkSize / 2 );
       inFile.seekg( i + 8, std::ios::beg );
-      inFile.read( reinterpret_cast<char*>( &_waveData[0] ), dwChunkSize );
+      inFile.read( reinterpret_cast< char* >( &_waveData[0] ), dwChunkSize );
       bFilledData = true;
       break;
     }
@@ -177,21 +173,15 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   return true;
 }
 
-//-----------------------------------------------------------------------------
-
 void R11PpWaveStreamer::Play()
 {
   _isPlaying = true;
 }
 
-//-----------------------------------------------------------------------------
-
 void R11PpWaveStreamer::Pause()
 {
   _isPlaying = false;
 }
-
-//-----------------------------------------------------------------------------
 
 void R11PpWaveStreamer::Stop()
 {
@@ -203,19 +193,15 @@ void R11PpWaveStreamer::Stop()
   _busyMutex.unlock();
 }
 
-//-----------------------------------------------------------------------------
-
 bool R11PpWaveStreamer::IsPlaying()
 {
   return _isPlaying;
 }
 
-//=============================================================================
-
 void R11PpWaveStreamer::Process_()
 {
-  LoadFile( std::get< 0 >( input_ ) );
-  std::get< 1 >( input_ ) ? Play() : Pause();
+  LoadFile( std::get < 0 > ( input_ ) );
+  std::get < 1 > ( input_ ) ? Play() : Pause();
 
   if( _isPlaying && _waveData.size() > 0 )
   {
@@ -238,14 +224,14 @@ void R11PpWaveStreamer::Process_()
 
     _busyMutex.unlock();
 
-    std::get< 0 >( output_ ) = _leftChannel;
-    std::get< 1 >( output_ ) = _rightChannel;
+    std::get < 0 > ( output_ ) = _leftChannel;
+    std::get < 1 > ( output_ ) = _rightChannel;
   }
   else
   {
-    std::get< 0 >( output_ ) = {};
-    std::get< 1 >( output_ ) = {};
+    std::get< 0 >( output_ ) =
+    {};
+    std::get< 1 >( output_ ) =
+    {};
   }
 }
-
-//=============================================================================
