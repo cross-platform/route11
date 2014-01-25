@@ -29,13 +29,13 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#include "R11PpAudioDevice.h"
-#include "../include/Route11.h"
+#include <R11PpAudioDevice.h>
+#include <Route11.h>
 
 #include <RtAudio.h>
 
 #include <iostream>
-#include "string.h"
+#include <string.h>
 #include <cstdlib>
 #include <thread>
 

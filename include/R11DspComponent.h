@@ -32,8 +32,8 @@
 #ifndef R11DSPCOMPONENT_H
 #define R11DSPCOMPONENT_H
 
-#include "DSPatch.h"
-#include "R11AsyncProcessThread.h"
+#include <DSPatch.h>
+#include <R11AsyncProcessThread.h>
 
 #include <cstdint>
 #include <functional>

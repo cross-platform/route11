@@ -37,10 +37,10 @@ template< typename ... T > void unused( T&&... )
 {
 }
 
-#include "../src/R11AsyncProcess.h"
-#include "../src/R11Process.h"
-#include "../src/R11ProcessLoop.h"
-#include "../src/R11ProcessPair.h"
+#include <R11AsyncProcess.h>
+#include <R11Process.h>
+#include <R11ProcessLoop.h>
+#include <R11ProcessPair.h>
 
 #endif // ROUTE11_H
 /**
@@ -97,7 +97,7 @@ template< typename ... T > void unused( T&&... )
 
  \subsection step4 Step 4: Roll your own Route11 projects
  As Route11 is not reliant on any non-standard 3rd party sources, getting a Route11 project to
- compile and run is really easy. All you need to do from your project is #include "Route11.h" from
+ compile and run is really easy. All you need to do from your project is #include <Route11.h> from
  the "include" folder (in the Route11 root directory) and you're ready to go.
 
  \subsection step5 Step 5: Refer to the documentation

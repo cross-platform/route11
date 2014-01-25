@@ -32,7 +32,7 @@
 #ifndef R11ASYNCPROCESS_H
 #define R11ASYNCPROCESS_H
 
-#include "R11AsyncProcessThread.h"
+#include <R11AsyncProcessThread.h>
 
 #include <algorithm>
 #include <cstdint>

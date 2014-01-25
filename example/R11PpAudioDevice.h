@@ -86,7 +86,7 @@ private:
 
 private:
   uint_fast32_t _bufferSize = 128;
-  uint_fast32_t _sampleRate = 11025;
+  uint_fast32_t _sampleRate = 44100;
   int_fast16_t _deviceCount = 0;
 
   bool _gotWaitReady = false;

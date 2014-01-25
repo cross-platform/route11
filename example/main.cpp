@@ -29,10 +29,10 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#include "R11PsMicWaveMixer.h"
+#include <R11PsMicWaveMixer.h>
 
 /// this application instantiates a Route11 "Mic/Wave Mixer" process system,
-/// sets the input wave file and crossfade levels, then ticks the system 1500
+/// sets the input wave file and crossfade levels, then ticks the system 2500
 /// times before exiting.
 
 int main()
@@ -41,13 +41,13 @@ int main()
   R11PsMicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
   // set mixer input values
-  mixer.SetInput < R11PsMicWaveMixer::File > ( "Tchaikovski-Swan-Lake-Scene.wav" );
+  mixer.SetInput < R11PsMicWaveMixer::File > ( EXAMPLE_WAV_FILE );
   mixer.SetInput < R11PsMicWaveMixer::Play > ( true );
   mixer.SetInput < R11PsMicWaveMixer::Fade1 > ( 0.75 );
   mixer.SetInput < R11PsMicWaveMixer::Fade2 > ( 0.75 );
 
   // tick mixer system
-  for( int i = 0; i < 1500; ++i )
+  for( int i = 0; i < 2500; ++i )
   {
     mixer.Tick();
   }

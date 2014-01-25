@@ -29,7 +29,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#include "R11PpWaveStreamer.h"
+#include <R11PpWaveStreamer.h>
 
 #include <array>
 #include <fstream>
@@ -82,7 +82,7 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
   }
 
   inFile.seekg( 4, std::ios::beg ); //get file size
-  inFile.read( reinterpret_cast< char* >( &dwFileSize ), sizeof( dwFileSize ) );
+  inFile.read( reinterpret_cast< char* >( &dwFileSize ), 4 );
   if( dwFileSize <= 16 )
   {
     inFile.close();
@@ -104,7 +104,7 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
     inFile.seekg( i, std::ios::beg );
     inFile.read( dwChunkId.data(), 4 );
     inFile.seekg( i + 4, std::ios::beg );
-    inFile.read( reinterpret_cast< char* >( &dwChunkSize ), sizeof( dwChunkSize ) );
+    inFile.read( reinterpret_cast< char* >( &dwChunkSize ), 4 );
     if( !strcmp( dwChunkId.data(), "fmt " ) )
     {
       inFile.seekg( i + 8, std::ios::beg );
@@ -141,7 +141,7 @@ bool R11PpWaveStreamer::LoadFile( std::string& filePath )
     inFile.seekg( i, std::ios::beg );
     inFile.read( dwChunkId.data(), 4 );
     inFile.seekg( i + 4, std::ios::beg );
-    inFile.read( reinterpret_cast< char* >( &dwChunkSize ), sizeof( dwChunkSize ) );
+    inFile.read( reinterpret_cast< char* >( &dwChunkSize ), 4 );
     if( !strcmp( dwChunkId.data(), "data" ) )
     {
       _waveData.resize( dwChunkSize / 2 );

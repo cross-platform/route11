@@ -32,11 +32,11 @@
 #ifndef R11PSMICWAVEMIXER_H
 #define R11PSMICWAVEMIXER_H
 
-#include "../include/Route11.h"
+#include <Route11.h>
 
-#include "R11PpAudioDevice.h"
-#include "R11PpCrossfader.h"
-#include "R11PpWaveStreamer.h"
+#include <R11PpAudioDevice.h>
+#include <R11PpCrossfader.h>
+#include <R11PpWaveStreamer.h>
 
 using Route11::R11AsyncProcess;
 using Route11::R11Process;
