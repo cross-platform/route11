@@ -19,11 +19,13 @@ include_directories(
 
 file(GLOB srcs src/*.cpp)
 file(GLOB hdrs include/*.h)
+file(GLOB in_hdrs include/route11/*.h)
 
 add_library(
     ${PROJECT_NAME}
     ${srcs}
     ${hdrs}
+    ${in_hdrs}
 )
 
 install(
@@ -33,5 +35,10 @@ install(
 
 install(
     FILES ${hdrs}
+    DESTINATION include
+)
+
+install(
+    FILES ${in_hdrs}
     DESTINATION include/route11
 )
