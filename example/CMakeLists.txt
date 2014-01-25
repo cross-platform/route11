@@ -1,4 +1,4 @@
-project(route11_example)
+project(Route11Example)
 
 add_definitions(
     -D__LINUX_ALSA__
@@ -32,7 +32,7 @@ add_executable(
 target_link_libraries(
     ${PROJECT_NAME}
 
-    route11
+    Route11
 
     asound
     pthread
