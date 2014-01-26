@@ -33,6 +33,7 @@
 #define R11PPWAVESTREAMER_H
 
 #include <condition_variable>
+#include <string>
 #include <vector>
 
 /// this process policy implements a stereo wave file audio streamer
