@@ -127,7 +127,7 @@ uint_fast16_t R11PpAudioDevice::GetDeviceCount()
 
 bool R11PpAudioDevice::IsStreaming()
 {
-  return _isStreaming;
+  return !_streamStop;
 }
 
 void R11PpAudioDevice::SetBufferSize( uint_fast32_t bufferSize )
@@ -207,31 +207,15 @@ void R11PpAudioDevice::_StopStream()
 {
   _streamStop = true;
 
-  for( uint_fast16_t i = 0; i < 250; ++i )
-  {
-    _waitCondt.notify_all();
-
-    if( _isStreaming )
-    {
-      std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-    }
-    else
-    {
-      break;
-    }
-  }
-
-  if( _rtAudio->audioStream.isStreamRunning() )
-  {
-    _rtAudio->audioStream.stopStream();
-  }
+  _buffersMutex.lock();
+  _gotWaitReady = true; // set release flag
+  _waitCondt.notify_all(); // release sync
+  _buffersMutex.unlock();
 
   if( _rtAudio->audioStream.isStreamOpen() )
   {
     _rtAudio->audioStream.closeStream();
   }
-
-  _syncCondt.notify_all();
 }
 
 void R11PpAudioDevice::_StartStream()
@@ -259,7 +243,6 @@ void R11PpAudioDevice::_StartStream()
   _rtAudio->audioStream.startStream();
 
   _streamStop = false;
-  _isStreaming = true;
 }
 
 int R11PpAudioDevice::_StaticCallback( void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames,
@@ -308,10 +291,10 @@ int R11PpAudioDevice::_DynamicCallback( void* inputBuffer, void* outputBuffer )
   }
   else
   {
-    _isStreaming = false;
+    _SyncBuffer();
+    return 1;
   }
 
   _SyncBuffer();
-
   return 0;
 }

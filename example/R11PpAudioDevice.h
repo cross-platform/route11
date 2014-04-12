@@ -92,7 +92,6 @@ private:
   bool _gotWaitReady = false;
   bool _gotSyncReady = true;
   bool _streamStop = false;
-  bool _isStreaming = false;
 
   std::vector< std::vector< float > > _outputChannels;
   std::vector< std::vector< float > > _inputChannels;
