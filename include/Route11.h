@@ -109,6 +109,10 @@ template< typename ... T > void unused( T&&... )
 
  \section release_notes Release Notes
 
+ \subsection v03 v.0.3 (26 January 2014)
+ - Fixed cross-platform build issues.
+ - Replaced raw pointers with safe pointers.
+
  \subsection v02 v.0.2 (15 October 2013)
  - Replaced Qt project with more flexible CMakeLists.
  - Adjusted code for GCC compiler.
