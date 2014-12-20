@@ -17,21 +17,10 @@ include_directories(
     ${CMAKE_SOURCE_DIR}/include
 )
 
-file(GLOB srcs src/*.cpp)
 file(GLOB hdrs include/*.h)
 file(GLOB in_hdrs include/route11/*.h)
 
-add_library(
-    ${PROJECT_NAME}
-    ${srcs}
-    ${hdrs}
-    ${in_hdrs}
-)
-
-install(
-    TARGETS ${PROJECT_NAME}
-    DESTINATION lib
-)
+add_custom_target(srcs SOURCES ${hdrs} ${in_hdrs})
 
 install(
     FILES ${hdrs}

@@ -245,10 +245,9 @@ void R11PpAudioDevice::_StartStream()
   _streamStop = false;
 }
 
-int R11PpAudioDevice::_StaticCallback( void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames,
-    double streamTime, unsigned int status, void* userData )
+int R11PpAudioDevice::_StaticCallback( void* outputBuffer, void* inputBuffer, unsigned int,
+    double, unsigned int, void* userData )
 {
-  unused( nBufferFrames, streamTime, status );
   return ( ( R11PpAudioDevice* ) userData )->_DynamicCallback( inputBuffer, outputBuffer );
 }
 
