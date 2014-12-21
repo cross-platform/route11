@@ -25,7 +25,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     add_custom_command(
         TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_BINARY_DIR}/$<CONFIGURATION>/DSPatch.dll
+        ${CMAKE_BINARY_DIR}/$<CONFIGURATION>/Route11.dll
         ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIGURATION>
     )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
@@ -34,10 +34,15 @@ endif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     add_definitions(-D__LINUX_ALSA__)
 
+    find_library(ASOUND asound)
+    if(NOT ASOUND)
+        message(FATAL_ERROR "ALSA not found (Ensure that libasound2-dev is installed)")
+    endif()
+
     target_link_libraries(
         ${PROJECT_NAME}
+        ${ASOUND}
         pthread
-        asound
     )
 endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
