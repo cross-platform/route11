@@ -1,12 +1,18 @@
-find_package(Doxygen)
+option(RUN_DOXYGEN "Run Doxygen" OFF)
 
-if(DOXYGEN_FOUND)
+if(${RUN_DOXYGEN})
 
-  add_custom_target(
-    doc ALL
-    ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    COMMENT "Generating API documentation with Doxygen" VERBATIM
-  )
+  find_package(Doxygen)
 
-endif(DOXYGEN_FOUND)
+  if(DOXYGEN_FOUND)
+
+    add_custom_target(
+      doc ALL
+      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMENT "Generating API documentation with Doxygen" VERBATIM
+    )
+
+  endif(DOXYGEN_FOUND)
+
+endif(${RUN_DOXYGEN})

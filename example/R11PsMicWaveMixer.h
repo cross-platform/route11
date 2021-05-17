@@ -50,20 +50,25 @@ class _R11PsMicWaveMixer
 {
 private:
   // step 1 : define aliases for processes required
+  // (R11PsMicWaveMixer - Step 1.png)
   using Ws = R11Process< R11PpWaveStreamer >;
   using Cf = R11Process< R11PpCrossfader >;
   using Ad = R11Process< R11PpAudioDevice >;
 
   // step 2 : pair 2 crossfaders
+  // (R11PsMicWaveMixer - Step 2.png)
   typedef R11ProcessPair< 3, 1, Cf, 3, 1, Cf > CfCf;
 
   // step 3 : pair and connect the crossfader pair to an audio device
+  // (R11PsMicWaveMixer - Step 3.png)
   typedef R11ProcessPair< 6, 2, CfCf, 2, 2, Ad, 0, 0, 1, 1 > CfCfAd;
 
   // step 4 : feed audio device outputs back into the crossfader pair
+  // (R11PsMicWaveMixer - Step 4.png)
   typedef R11ProcessLoop< 8, 4, CfCfAd, 2, 0, 3, 3 > _CfCfAd_;
 
   // step 5 : pair and connect a wave streamer to the crossfader inputs
+  // (R11PsMicWaveMixer - Step 5.png)
   typedef R11ProcessPair< 2, 2, Ws, 8, 4, _CfCfAd_, 0, 1, 1, 4 > Ws_CfCfAd_;
 
 public:
