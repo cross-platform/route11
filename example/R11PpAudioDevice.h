@@ -1,6 +1,6 @@
 /************************************************************************
  Route11 - C++ Flow-Based Metaprogramming Library
- Copyright (c) 2013 Marcus Tomlinson
+ Copyright (c) 2021 Marcus Tomlinson
 
  This file is part of Route11.
 
@@ -29,13 +29,12 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#ifndef R11PPAUDIODEVICE_H
-#define R11PPAUDIODEVICE_H
+#pragma once
 
-#include <string>
-#include <vector>
 #include <condition_variable>
 #include <memory>
+#include <string>
+#include <vector>
 
 struct RtAudioMembers;
 
@@ -44,67 +43,65 @@ struct RtAudioMembers;
 class R11PpAudioDevice
 {
 public:
-  R11PpAudioDevice();
+    R11PpAudioDevice();
 
-  bool SetDevice( int_fast16_t deviceIndex );
+    bool SetDevice( int_fast16_t deviceIndex );
 
-  std::string GetDeviceName( int_fast16_t deviceIndex );
-  uint_fast16_t GetDeviceInputCount( int_fast16_t deviceIndex );
-  uint_fast16_t GetDeviceOutputCount( int_fast16_t deviceIndex );
-  uint_fast16_t GetCurrentDevice();
-  uint_fast16_t GetDeviceCount();
+    std::string GetDeviceName( int_fast16_t deviceIndex );
+    uint_fast16_t GetDeviceInputCount( int_fast16_t deviceIndex );
+    uint_fast16_t GetDeviceOutputCount( int_fast16_t deviceIndex );
+    uint_fast16_t GetCurrentDevice();
+    uint_fast16_t GetDeviceCount();
 
-  bool IsStreaming();
+    bool IsStreaming();
 
-  void SetBufferSize( uint_fast32_t bufferSize );
-  void SetSampleRate( uint_fast32_t sampleRate );
-  uint_fast32_t GetSampleRate();
-
-protected:
-  ~R11PpAudioDevice();
-
-  void Process_();
+    void SetBufferSize( uint_fast32_t bufferSize );
+    void SetSampleRate( uint_fast32_t sampleRate );
+    uint_fast32_t GetSampleRate();
 
 protected:
-  // 2 input audio streams
-  std::tuple< std::vector< float >, std::vector< float > > input_;
+    ~R11PpAudioDevice();
 
-  // 2 output audio streams
-  std::tuple< std::vector< float >, std::vector< float > > output_;
+    void Process_();
 
-private:
-  void _WaitForBuffer();
-  void _SyncBuffer();
+protected:
+    // 2 input audio streams
+    std::tuple<std::vector<float>, std::vector<float>> input_;
 
-  void _StopStream();
-  void _StartStream();
-
-  static int _StaticCallback( void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, double streamTime,
-      unsigned int status, void* userData );
-
-  int _DynamicCallback( void* inputBuffer, void* outputBuffer );
+    // 2 output audio streams
+    std::tuple<std::vector<float>, std::vector<float>> output_;
 
 private:
-  uint_fast32_t _bufferSize = 128;
-  uint_fast32_t _sampleRate = 44100;
-  int_fast16_t _deviceCount = 0;
+    void _WaitForBuffer();
+    void _SyncBuffer();
 
-  bool _gotWaitReady = false;
-  bool _gotSyncReady = true;
-  bool _streamStop = false;
-  bool _isStreaming = false;
+    void _StopStream();
+    void _StartStream();
 
-  std::vector< std::vector< float > > _outputChannels;
-  std::vector< std::vector< float > > _inputChannels;
+    static int _StaticCallback(
+        void* outputBuffer, void* inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void* userData );
 
-  std::unique_ptr< RtAudioMembers > _rtAudio;
+    int _DynamicCallback( void* inputBuffer, void* outputBuffer );
 
-  std::mutex _buffersMutex;
-  std::mutex _syncMutex;
-  std::condition_variable_any _waitCondt;
-  std::condition_variable_any _syncCondt;
+private:
+    uint_fast32_t _bufferSize = 128;
+    uint_fast32_t _sampleRate = 44100;
+    int_fast16_t _deviceCount = 0;
 
-  uint_fast16_t _currentDevice = 0;
+    bool _gotWaitReady = false;
+    bool _gotSyncReady = true;
+    bool _streamStop = false;
+    bool _isStreaming = false;
+
+    std::vector<std::vector<float>> _outputChannels;
+    std::vector<std::vector<float>> _inputChannels;
+
+    std::unique_ptr<RtAudioMembers> _rtAudio;
+
+    std::mutex _buffersMutex;
+    std::mutex _syncMutex;
+    std::condition_variable_any _waitCondt;
+    std::condition_variable_any _syncCondt;
+
+    uint_fast16_t _currentDevice = 0;
 };
-
-#endif // R11PPAUDIODEVICE_H

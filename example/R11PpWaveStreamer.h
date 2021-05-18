@@ -1,6 +1,6 @@
 /************************************************************************
  Route11 - C++ Flow-Based Metaprogramming Library
- Copyright (c) 2013 Marcus Tomlinson
+ Copyright (c) 2021 Marcus Tomlinson
 
  This file is part of Route11.
 
@@ -29,8 +29,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#ifndef R11PPWAVESTREAMER_H
-#define R11PPWAVESTREAMER_H
+#pragma once
 
 #include <condition_variable>
 #include <string>
@@ -41,63 +40,61 @@
 class R11PpWaveStreamer
 {
 public:
-  R11PpWaveStreamer();
+    R11PpWaveStreamer();
 
-  bool LoadFile( std::string& filePath );
-  void Play();
-  void Pause();
-  void Stop();
+    bool LoadFile( const std::string& filePath );
+    void Play();
+    void Pause();
+    void Stop();
 
-  bool IsPlaying();
-
-protected:
-  ~R11PpWaveStreamer();
-
-  void Process_();
+    bool IsPlaying();
 
 protected:
-  // 1 input file name, 1 input play trigger
-  std::tuple< std::string, bool > input_;
+    ~R11PpWaveStreamer();
 
-  // 2 output audio streams
-  std::tuple< std::vector< float >, std::vector< float > > output_;
+    void Process_();
+
+protected:
+    // 1 input file name, 1 input play trigger
+    std::tuple<std::string, bool> input_;
+
+    // 2 output audio streams
+    std::tuple<std::vector<float>, std::vector<float>> output_;
 
 private:
-  struct WaveFormat
-  {
-    void Clear()
+    struct WaveFormat
     {
-      format = 0;
-      channelCount = 0;
-      sampleRate = 0;
-      byteRate = 0;
-      frameSize = 0;
-      bitDepth = 0;
-      extraDataSize = 0;
-    }
+        void Clear()
+        {
+            format = 0;
+            channelCount = 0;
+            sampleRate = 0;
+            byteRate = 0;
+            frameSize = 0;
+            bitDepth = 0;
+            extraDataSize = 0;
+        }
 
-    uint_fast16_t format; // Integer identifier of the format
-    uint_fast16_t channelCount; // Number of audio channels
-    uint_fast32_t sampleRate; // Audio sample rate
-    uint_fast32_t byteRate; // Bytes per second (possibly approximate)
-    uint_fast16_t frameSize; // Size in bytes of a sample block (all channels)
-    uint_fast16_t bitDepth; // Size in bits of a single per-channel sample
-    uint_fast16_t extraDataSize; // Bytes of extra data appended to this struct
-  };
+        uint_fast16_t format;         // Integer identifier of the format
+        uint_fast16_t channelCount;   // Number of audio channels
+        uint_fast32_t sampleRate;     // Audio sample rate
+        uint_fast32_t byteRate;       // Bytes per second (possibly approximate)
+        uint_fast16_t frameSize;      // Size in bytes of a sample block (all channels)
+        uint_fast16_t bitDepth;       // Size in bits of a single per-channel sample
+        uint_fast16_t extraDataSize;  // Bytes of extra data appended to this struct
+    };
 
 private:
-  std::string _filePath = "";
-  bool _isPlaying = false;
-  uint_fast32_t _bufferSize = 128;
-  uint_fast32_t _sampleIndex = 0;
-  float _shortToFloatCoeff = 1.0f / 32767.0f;
+    std::string _filePath = "";
+    bool _isPlaying = false;
+    uint_fast32_t _bufferSize = 128;
+    uint_fast32_t _sampleIndex = 0;
+    float _shortToFloatCoeff = 1.0f / 32767.0f;
 
-  WaveFormat _waveFormat;
-  std::vector< int16_t > _waveData;
-  std::mutex _busyMutex;
+    WaveFormat _waveFormat;
+    std::vector<int16_t> _waveData;
+    std::mutex _busyMutex;
 
-  std::vector< float > _leftChannel;
-  std::vector< float > _rightChannel;
+    std::vector<float> _leftChannel;
+    std::vector<float> _rightChannel;
 };
-
-#endif // R11PPWAVESTREAMER_H

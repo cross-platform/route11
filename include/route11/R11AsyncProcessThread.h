@@ -1,6 +1,6 @@
 /************************************************************************
  Route11 - C++ Flow-Based Metaprogramming Library
- Copyright (c) 2013 Marcus Tomlinson
+ Copyright (c) 2021 Marcus Tomlinson
 
  This file is part of Route11.
 
@@ -29,20 +29,19 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#ifndef R11ASYNCPROCESSTHREAD_H
-#define R11ASYNCPROCESSTHREAD_H
+#pragma once
 
+#include <condition_variable>
 #include <functional>
 #include <thread>
-#include <condition_variable>
 
 namespace Route11
 {
 
 enum class R11ThreadConfig
 {
-  SingleThreaded, // use main application thread to do all processing
-  ThreadPerCore // use one thread per processor core for processing
+    SingleThreaded,  // use main application thread to do all processing
+    ThreadPerCore    // use one thread per processor core for processing
 };
 
 /// This class is used by R11AsyncProcess to control each process thread
@@ -50,35 +49,33 @@ enum class R11ThreadConfig
 class R11AsyncProcessThread
 {
 public:
-  R11AsyncProcessThread() = default;
-  R11AsyncProcessThread( const R11AsyncProcessThread& other );
+    R11AsyncProcessThread() = default;
+    R11AsyncProcessThread( const R11AsyncProcessThread& other );
 
-  ~R11AsyncProcessThread();
+    ~R11AsyncProcessThread();
 
-  void Initialise( std::function< void( int_fast8_t ) > tickMethod );
+    void Initialise( std::function<void( int_fast8_t )> tickMethod );
 
-  void Sync();
+    void Sync();
 
-  void Resume();
-
-private:
-  void _Stop();
-
-  void _ThreadTick();
+    void Resume();
 
 private:
-  std::function< void( int_fast8_t ) > _tickMethod = nullptr;
+    void _Stop();
 
-  bool _stop = false;
-  bool _stopped = false;
-  bool _gotResume = false;
-  bool _gotSync = true;
-  std::mutex _resumeMutex;
-  std::condition_variable_any _resumeCondt;
-  std::condition_variable_any _syncCondt;
-  std::thread _thread = std::thread( &R11AsyncProcessThread::_ThreadTick, this );
+    void _ThreadTick();
+
+private:
+    std::function<void( int_fast8_t )> _tickMethod = nullptr;
+
+    bool _stop = false;
+    bool _stopped = false;
+    bool _gotResume = false;
+    bool _gotSync = true;
+    std::mutex _resumeMutex;
+    std::condition_variable_any _resumeCondt;
+    std::condition_variable_any _syncCondt;
+    std::thread _thread = std::thread( &R11AsyncProcessThread::_ThreadTick, this );
 };
 
-} // namespace Route11
-
-#endif // R11ASYNCPROCESSTHREAD_H
+}  // namespace Route11

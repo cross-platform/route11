@@ -1,6 +1,6 @@
 /************************************************************************
  Route11 - C++ Flow-Based Metaprogramming Library
- Copyright (c) 2013 Marcus Tomlinson
+ Copyright (c) 2021 Marcus Tomlinson
 
  This file is part of Route11.
 
@@ -29,54 +29,49 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ************************************************************************/
 
-#ifndef R11PPCROSSFADER_H
-#define R11PPCROSSFADER_H
+#pragma once
 
 /// this process policy implements a crossfader between 2 input audio streams
 
 class R11PpCrossfader
 {
 protected:
-  ~R11PpCrossfader() = default;
+    ~R11PpCrossfader() = default;
 
-  void Process_()
-  {
-    // get buffer size and crossfade level
-    auto bufferSize = std::get < 0 > ( input_ ).size();
-    auto crossfade = std::get < 2 > ( input_ );
-
-    // don't continue if the 2 input stream lengths don't match
-    if( bufferSize != std::get < 1 > ( input_ ).size() || crossfade < 0 || crossfade > 1 )
+    void Process_()
     {
-      std::get< 0 >( output_ ) =
-      {};
-      return;
-    }
+        // get buffer size and crossfade level
+        auto bufferSize = std::get<0>( input_ ).size();
+        auto crossfade = std::get<2>( input_ );
 
-    // update _bufferSize if necessary
-    if( _bufferSize != bufferSize )
-    {
-      std::get < 0 > ( output_ ).resize( bufferSize );
-      _bufferSize = bufferSize;
-    }
+        // don't continue if the 2 input stream lengths don't match
+        if ( bufferSize != std::get<1>( input_ ).size() || crossfade < 0 || crossfade > 1 )
+        {
+            std::get<0>( output_ ) = {};
+            return;
+        }
 
-    // set output stream as the crossfaded result of the 2 input streams
-    for( uint_fast32_t i = 0; i < bufferSize; ++i )
-    {
-      std::get < 0 > ( output_ )[i] = ( std::get < 0 > ( input_ )[i] * ( 1 - crossfade ) )
-          + ( std::get < 1 > ( input_ )[i] * crossfade );
+        // update _bufferSize if necessary
+        if ( _bufferSize != bufferSize )
+        {
+            std::get<0>( output_ ).resize( bufferSize );
+            _bufferSize = bufferSize;
+        }
+
+        // set output stream as the crossfaded result of the 2 input streams
+        for ( uint_fast32_t i = 0; i < bufferSize; ++i )
+        {
+            std::get<0>( output_ )[i] = ( std::get<0>( input_ )[i] * ( 1 - crossfade ) ) + ( std::get<1>( input_ )[i] * crossfade );
+        }
     }
-  }
 
 protected:
-  // 2 input audio streams, 1 input crossfade level
-  std::tuple< std::vector< float >, std::vector< float >, float > input_;
+    // 2 input audio streams, 1 input crossfade level
+    std::tuple<std::vector<float>, std::vector<float>, float> input_;
 
-  // 1 output audio stream
-  std::tuple< std::vector< float > > output_;
+    // 1 output audio stream
+    std::tuple<std::vector<float>> output_;
 
 private:
-  uint_fast32_t _bufferSize = 0;
+    uint_fast32_t _bufferSize = 0;
 };
-
-#endif // R11PPCROSSFADER_H

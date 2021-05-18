@@ -1,6 +1,6 @@
 /************************************************************************
  Route11 - C++ Flow-Based Metaprogramming Library
- Copyright (c) 2013 Marcus Tomlinson
+ Copyright (c) 2021 Marcus Tomlinson
 
  This file is part of Route11.
 
@@ -37,20 +37,20 @@
 
 int main()
 {
-  // create a "Mic/Wave Mixer" process system
-  R11PsMicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
+    // create a "Mic/Wave Mixer" process system
+    R11PsMicWaveMixer mixer( Route11::R11ThreadConfig::ThreadPerCore );
 
-  // set mixer input values
-  mixer.SetInput < R11PsMicWaveMixer::File > ( EXAMPLE_WAV_FILE );
-  mixer.SetInput < R11PsMicWaveMixer::Play > ( true );
-  mixer.SetInput < R11PsMicWaveMixer::Fade1 > ( 0.75 );
-  mixer.SetInput < R11PsMicWaveMixer::Fade2 > ( 0.75 );
+    // set mixer input values
+    mixer.SetInput<R11PsMicWaveMixer::File>( EXAMPLE_WAV_FILE );
+    mixer.SetInput<R11PsMicWaveMixer::Play>( true );
+    mixer.SetInput<R11PsMicWaveMixer::Fade1>( 0.75 );
+    mixer.SetInput<R11PsMicWaveMixer::Fade2>( 0.75 );
 
-  // tick mixer system
-  for( int i = 0; i < 2500; ++i )
-  {
-    mixer.Tick();
-  }
+    // tick mixer system
+    for ( int i = 0; i < 2500; ++i )
+    {
+        mixer.Tick();
+    }
 
-  return 0;
+    return 0;
 }
